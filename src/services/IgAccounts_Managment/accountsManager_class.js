@@ -1,0 +1,224 @@
+const {JsonFile_Access}=require("./storage_utils.js");
+const {IgAccounts_LoginControl}=require("../IgAccounts_login");
+
+
+let IG_ACCOUNTS_DATA={};
+
+
+/*
+Clase encargada de manejar todo lo relacionado con las cuentas de IG:
+
+- Carga los datos de las cuentas en memoria.
+
+- Es la unica que puede acceder a ellos.
+
+- Provee los datos de cuentas para hacer una request a ig.
+
+- A traves de ella se pueden modificar datos de las cuentas.
+*/
+class IgAccounts_Manager{
+    constructor(){
+        
+        //Acceso a alamcenamiento externo
+        this.Storage_Access=new JsonFile_Access();
+        
+        //this.Accounts_LoginControl=new IgAccounts_LoginControl(this);
+        
+        
+        //Traer la data
+        //Meterla a memoria
+        IG_ACCOUNTS_DATA=this.__getAll_fromStorage()
+        
+        //Darle la data al "IgAccountUse_Manager"
+        this.AccountsUse_Manager=this.__create_AccountsUse_Manager(IG_ACCOUNTS_DATA);
+    }
+    
+    //Da la data de una cuenta para hacer req
+    get_accountForReq(){
+       let account_key;
+       let repeat=false;
+       
+       do{
+         account_key=this.AccountsUse_Manager.get_availAccount();
+         
+         //Si pasa esto es q no hay mas accounts disponibles
+         if (account_key==undefined){
+            //-------------------- TIRAR ERROR ACAAA -------------------------------------
+            return undefined;
+            break;
+         }
+         
+         //Si la cuenta no esta activa, hay que pedir otra
+         if (IG_ACCOUNTS_DATA[account_key]["active"]==false){
+            repeat=true;
+         }
+         
+         //Si todo esta bien, devolvemos la data de auth.
+         else{
+            let authData=IG_ACCOUNTS_DATA[account_key]["auth"];
+
+            return {key:account_key,data:authData}
+         }
+       }
+       while(repeat);
+    
+    } 
+    
+    
+    //Da data de la cuenta para lo q sea (la usaria el de login x ejemplo)
+    get_accountData(account_key,field){
+        
+        return IG_ACCOUNTS_DATA[account_key][field];
+    }
+    
+    
+    //Setea data de la cuenta (la usaria el de login x ejemplo)
+    set_accountData(account_key,field,data){
+        
+        if (IG_ACCOUNTS_DATA[account_key][field]!=undefined){
+            
+            //Guardar en memoria
+            IG_ACCOUNTS_DATA[account_key][field]=data;
+
+            //guardar despues en alamcenamiento ext
+            this.Storage_Access.write(IG_ACCOUNTS_DATA);
+        
+        }
+    }
+    
+    //Activa una cuenta
+    enable_account(account_key){
+        
+        if (IG_ACCOUNTS_DATA[account_key]["active"]!=true){
+        
+            //Guardar en memoria, y ext
+            this.set_accountData(account_key,"active",true);
+            
+            //Habilitar en "IgAccountsUse_Manager"
+            this.AccountsUse_Manager.enable_account(account_key);
+        
+        }
+    }
+    
+    //Desactiva una cuenta (cuando nos la banea instagram x ejemplo)
+    disable_account(account_key,reason){
+        
+        if (IG_ACCOUNTS_DATA[account_key]["active"]!=false){
+            
+            //Guardar en memoria y ext.
+            this.set_accountData(account_key,"active",false);
+            
+            //Deshabilitar en "IgAccountsUse_Manager"
+            this.AccountsUse_Manager.disable_account(account_key);
+
+            if (reason=="auth"){
+                //Llamar al coso de login
+                this.Accounts_LoginControl.update_authCredentials();
+            }
+
+            if (reason=="banned"){
+                //Logearlo a algun lado
+            }
+        }
+    }
+
+    __create_AccountsUse_Manager(accounts_data){
+        let accounts_keys=[];
+        
+        //Solo metemos las keys de las account q esten activas
+        for (let key of Object.keys(accounts_data)){
+            if (accounts_data[key].active){
+                accounts_keys.push(key);
+            }
+        }
+
+        return new IgAccountsUse_Manager(accounts_keys);
+    }
+    
+    //Trae la data del almacenamiento externo y la mete a memoria
+    __getAll_fromStorage(){
+        return this.Storage_Access.read();
+    }
+
+    /*Guarda toda la data de una de la memoria en el almacenamiento externo
+    __saveAll_toStorage(){
+    }*/
+}
+
+
+
+/*
+Clase encargada de manejar el uso de las cuentas para las req, e
+ir entregando las que esten disponibles cuando se solicite alguna.
+*/
+class IgAccountsUse_Manager{
+    constructor(accounts_keys){
+        this.accounts=[]; //arr con las keys
+        this.accounts_data={}; //obj con las keys y su "data de uso"
+
+        [this.accounts,this.accounts_data]=this.__initialize(accounts_keys);
+
+        this.account_iterator=this.__iterator(this.accounts);
+        
+        //this.accounts=[key1,key2,key3]
+        //this.accounts_data={key:{active,req_x_hr,last_time}}
+
+        //el carrousel elije del arr la key, y con eso se trae la data del obj
+    }
+
+    __initialize(accounts_keys){
+        //Esto deberia crear el obj con la data de las cuentas,
+        //pero solo la data q tenga q ver con el uso.
+
+        //ademas deberia crear el carrousel q usemos.
+        //llenaer accounts_data y accounts
+        accounts_keys.forEach(key=>{
+            this.accounts.push(key);
+
+            //Crear el obj si fuera necesario
+            this.accounts_data[key]={};
+        })
+
+        return [this.accounts,this.accounts_data];
+    }
+
+    get_availAccount(){
+       let next_availAccount=this.account_iterator.next();
+
+       return next_availAccount;
+    }
+    
+    //
+    enable_account(key){
+        this.accounts.push(key);
+    }
+    
+    //
+    disable_account(key){
+        //Sacar la key de la cuenta del array.
+
+        for (let i=0;i<this.accounts.length;i++){
+            if (this.accounts[i]==key){
+                this.accounts.splice(i,1);
+                break;
+            }
+        }
+
+    }
+
+    __iterator(accounts){
+        let index=0;
+        return{
+            next:function(){
+                if(index>=accounts.length){
+                    index=0;
+                }
+                return accounts[index++];
+            }
+        }
+    }
+}
+
+
+
+module.exports={IgAccounts_Manager};

@@ -1,0 +1,21 @@
+{
+    "key_username":{
+        "login":{
+            "expire":"date",
+            "cookies":"str",
+            "headers?":"obj",
+            "password":"str_encrypted"
+
+        },
+
+        "auth":{
+            "expire":"date",
+            "cookies":"str",
+            "headers?":"obj"
+        },
+
+        "username":"str",
+        
+        "active":"bool"
+    }
+}
