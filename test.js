@@ -16,45 +16,10 @@ inititalize_IgAccountsManager();
 dale();*/
 
 
-class InternalError extends Error{
-    constructor(message,attachedError){
-      super(message);
-      this.message=message;
-      this.attachedError=attachedError;
-      this.critic;
-    }
-}
-
-class BannedAccountError extends InternalError{
-  constructor(message,attachedError){
-    super(message,attachedError);
-    this.critic=false;
-  }
-}
+//Probar si try-catch es async     |podemos usar el handler sin problema ya que es sync.
+//Probar si se propagan los errroes  | si se propgan
 
 
-class Error4User extends Error{
-    constructor(message,data){
-      super(message);
-      this.message=message;
-      this.data=data;
-      this.default_message;
-      this.status_code;
-    }
-}
+const {DEF_API_ERRORS}=require("./src/error_handling");
 
-
-/*try{
-  throw new BannedAccountError()
-}
-catch(e){
-  e.message="la cuenta baneada es la de tu vieja"
-  console.log(e);
-}
-
-//throw new Error4User();*/
-
-const {dirname}=require("path");
-
-console.log(__filename+"hola");
-
+throw DEF_API_ERRORS.BAD_REQ("putooo");

@@ -1,29 +1,47 @@
-const IG_REQUESTS_ERRORS={
-    CONNECTION: (descr)=>{return {type:IG_REQUESTS_ERRORS_TYPES.CONNECTION,descr:descr}},
-    BANNED_ACCOUNT: ()=>{return {type:IG_REQUESTS_ERRORS_TYPES.BANNED_ACCOUNT,descr:"Banned Account"}},
-    NOT_AUTH: ()=>{return {type:IG_REQUESTS_ERRORS_TYPES.NOT_AUTH,descr:"not auth account"}},
-};
 
+const {InternalError}=require("../../../error_handling");
 
-
-function request_errorHandler(error){
+function igRequest_errorHandler(error){
     let message=error.message;
     
     if (error.type=="invalid-json"){
-        //return IG_REQUESTS_ERRORS.BANNED_ACCOUNT;
-        return IG_REQUESTS_ERRORS.BANNED_ACCOUNT();
+        throw new BannedIgAccount_Error();
     }
 
     else if (message=="not auth"){
-        //return IG_REQUESTS_ERRORS.NOT_AUTH;
-        return IG_REQUESTS_ERRORS.NOT_AUTH();
+        throw new NotAuthIgAccount_Error();
     }
 
     else{
-        //return IG_REQUESTS_ERRORS.CONNECTION;
-        return IG_REQUESTS_ERRORS.CONNECTION(message);
+       throw new UnknownIgRequest_Error("",error);
     }
 }
 
 
-module.exports={IG_REQUESTS_ERRORS_TYPES, request_errorHandler};
+
+class NotAuthIgAccount_Error extends InternalError{
+    constructor(message,attachedError){
+        super(message,attachedError);
+        this.critic=false;
+    }
+}
+
+
+class BannedIgAccount_Error extends InternalError{
+    constructor(message,attachedError){
+        super(message,attachedError);
+        this.critic=false;
+    }
+}
+
+
+class UnknownIgRequest_Error extends InternalError{
+    constructor(message,attachedError){
+        super(message,attachedError);
+        this.critic=true;
+    }
+}
+
+
+module.exports={igRequest_errorHandler,
+                BannedIgAccount_Error,NotAuthIgAccount_Error,UnknownIgRequest_Error};

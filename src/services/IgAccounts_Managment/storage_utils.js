@@ -4,7 +4,7 @@ const fs=require("fs");
 //Acceso facil a los archivos json que tengamos
 class JsonFile_Access{
     constructor(file_path){
-        this.filePath="./src/services/IgAccounts_Managment/accounts.json";
+        this.filePath="./test.json";
     }
     
     //Esto traeria todo lo q hay en el file

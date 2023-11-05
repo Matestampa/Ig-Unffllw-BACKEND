@@ -1,8 +1,8 @@
 //Aca irian las 2 requests que necesitamos para traer los followers
 
-//const fetch=require("node-fetch");
+const fetch=require("node-fetch");
 
-const {request_errorHandler}=require("./error_handler.js");
+const {igRequest_errorHandler}=require("./error_handler.js");
 
 //-------------------------- REQUEST DE USER INFO------------------------------------
 const GEN_HEADERS={
@@ -49,33 +49,29 @@ async function userInfo_igRequest(account_cookies,username){
     
     let response,json_data;
     try{
-        /*response=await fetch(URL,{
+        response=await fetch(URL,{
             "headers":headers,
             "body":null,
             "method":"GET"
         })
 
-        //console.log(response);
 
         json_data=await response.json(); //handlear el error aca para ver q onda*/
 
-        throw new Error("not valid json");
-        //throw new Error("not auth");
+        if (json_data.require_login){
+            throw new Error("not auth")
+        }
     }
 
     catch(e){
         //llamar al error handler o lo q sea
-        let error=request_errorHandler(e);
-        return {user_info:undefined,error:error};
+        igRequest_errorHandler(e);
     }
 
     let isPrivate=json_data.data.user.is_private;
     let id=json_data.data.user.id;
 
-    
-    console.log(json_data);
-
-    return {user_info:{isPrivate:isPrivate,id:id}, error:undefined};
+    return {user_info:{isPrivate:isPrivate,id:id}};
 
 }
 

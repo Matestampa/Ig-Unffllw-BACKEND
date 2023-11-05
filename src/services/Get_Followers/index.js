@@ -12,7 +12,9 @@ const {sleep}=require("./utils.js");
 
 
 //Import errors part
-const {error_handler,SERVICE_ERRORS}=require("./service_errorHandler.js");
+const {error_handler}=require("./service_errorHandler.js");
+
+const {DEF_API_ERRORS}=require("../../error_handling");
 
 
 
@@ -22,30 +24,19 @@ const {error_handler,SERVICE_ERRORS}=require("./service_errorHandler.js");
 async function getFollowers_service(username){
     let IgAccountsManager=get_IgAccountsManager();
 
-    let data;
     
-    data=await get_userInfo(IgAccountsManager,username);
+    let info=await get_userInfo(IgAccountsManager,username);
 
     
-    if (data.error){
-        return {followers:undefined,error:data.error};
-    }
+    let followers=await get_followers(IgAccountsManager,info.user_info.id);
 
     
-    data=await get_followers(IgAccountsManager,data.user_info.id);
-
-    
-    if (data.error){
-        return {followers:undefined,error:data.error};
-    }
-
-    
-    return {followers:data.followers,error:undefined};
+    return {followers:followers};
 
 }
 
 
-//Return {user_info:{id,isPrivate},error}
+//Return {user_info:{id,isPrivate}}
 async function get_userInfo(AccountsManager,username){
     
     //Cuenta para hacer la request.
@@ -53,37 +44,33 @@ async function get_userInfo(AccountsManager,username){
     
     //Si ya no hay cuentas disponibles
     if (!req_account){
-        let error4User=error_handler(SERVICE_ERRORS.NO_AVAILABLE_ACCOUNTS, AccountsManager);
-        
-        return {user_info:undefined,error:error4User};
+        throw DEF_API_ERRORS.SERVER("No available Accounts");
     }
     
     //hacer la req de la data del perfil
-    let {user_info,error}=await userInfo_igRequest(req_account.auth.cookies, username);
+    let user_info;
     
-    //si hay error handlearlo y ver q le mandamos al user
-    if (error){
-        let error4User=await error_handler(error,AccountsManager,req_account.key);
-        
-        return {user_info:undefined,error:error4User};
+    try{
+        user_info=await userInfo_igRequest(req_account.auth.cookies, username);
     }
-
-    else{
-       
-       //Nos fijamos si la cuenta es privada
-       if (user_info.isPrivate){
-          let error4User=await error_handler(SERVICE_ERRORS.PRIVATE_PROFILE);
+    
+    //Ver si tira error la req
+    catch(error){
+        await error_handler(error,AccountsManager,req_account.key);
+    }
+    
+    //Nos fijamos si la cuenta es privada
+    if (user_info.isPrivate){
+        throw DEF_API_ERRORS.BAD_REQ("The account is private");
           
-          return {user_info:undefined,error:error4User};  
-       }
-
-       return {user_info:user_info,error:undefined};
     }
 
+    return user_info;
 }
 
 
-//Return {followers:{user_id:username...}, error}
+
+//Return {followers:{user_id:username...}}
 async function get_followers(AccountsManager,user_id){ 
 
     let followers={};
@@ -99,35 +86,32 @@ async function get_followers(AccountsManager,user_id){
         
         //Si ya no hay cuentas disponibles
         if (!req_account){
-            let error4User=error_handler(SERVICE_ERRORS.NO_AVAILABLE_ACCOUNTS, AccountsManager);
-            return {followers:undefined,error:error4User};
+            throw DEF_API_ERRORS.SERVER("No available Accounts");
         }
 
         //hacer la request
-        let {data,error}=await followers_igRequest(req_account.auth.cookies,user_id,cursor)
+        let data={};
         
-        //Si tira error handlearlo para devolverle algo al user
-        if (error){
-            let error4User=await error_handler(error,AccountsManager,req_account.key);
-            
-            return {followers:undefined,error:error4User};
-
+        try{
+            data=await followers_igRequest(req_account.auth.cookies,user_id,cursor)
+        } 
+        
+        //Ver si tiro errror la req
+        catch(error){
+            await error_handler(error,AccountsManager,req_account.key);
         }
         
         //Si no, vamos agregando los followers.
-        else{
-            followers={...followers,...data.followers};
+        
+        followers={...followers,...data.followers};
 
-            cursor=data.cursor;
-        }
-
+        cursor=data.cursor;
     }
     
     //Mientras el cursor siga teniendo contenido(es decir q todavia falten por traer)
     while(cursor!="");
 
-    
-    return {followers:followers,error:undefined};
+    return followers;
 }
 
 

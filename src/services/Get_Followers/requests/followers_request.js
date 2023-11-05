@@ -1,5 +1,5 @@
-//const fetch=require("node-fetch");
-const {request_errorHandler}=require("./error_handler.js");
+const fetch=require("node-fetch");
+const {igRequest_errorHandler}=require("./error_handler.js");
 
 const GEN_HEADERS={
     //"accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -78,13 +78,13 @@ async function followers_igRequest(auth_cookies,user_id,cursor){
         json_data=await response.json(); //---------------- CATCHEAR EL ERROR ACA ------
         
         if (json_data.require_login){
-           //throw new Error("not auth")
+           throw new Error("not auth")
         }
+
     }
     
     catch(e){
-        let error=request_errorHandler(e);
-        return {data:undefined,error:error};
+        igRequest_errorHandler(e);
     }
     
     //en que user se quedo, para saber a partir de cual traer despues
@@ -99,8 +99,9 @@ async function followers_igRequest(auth_cookies,user_id,cursor){
        
     //console.log(users_data_map);
 
-    return {data: {followers:users_data_map,cursor:next_cursor}, error:undefined};
+    return {data: {followers:users_data_map,cursor:next_cursor}};
 
 }
+
 
 module.exports={followers_igRequest};

@@ -2,6 +2,9 @@ const {JsonFile_Access}=require("./storage_utils.js");
 const {IgAccounts_LoginControl}=require("../IgAccounts_login");
 
 
+const {internalError_handler}=require("../../error_handling");
+const {NoMoreIgAccounts_Error}=require("./errors.js");
+
 let IG_ACCOUNTS_DATA={};
 
 
@@ -109,15 +112,18 @@ class IgAccounts_Manager{
             this.set_accountData(account_key,"active",false);
             
             //Deshabilitar en "IgAccountsUse_Manager"
-            this.AccountsUse_Manager.disable_account(account_key);
+            let accountsLeft=this.AccountsUse_Manager.disable_account(account_key);
+            
+            //Si no queda ninguna, hay que mandarlo al handler de erros central
+            //para que cancele las requests al server.
+            if (accountsLeft==0){
+                internalError_handler(new NoMoreIgAccounts_Error());
+            }
+
 
             if (reason=="auth"){
                 //Llamar al coso de login
                 this.Accounts_LoginControl.update_authCredentials();
-            }
-
-            if (reason=="banned"){
-                //Logearlo a algun lado
             }
         }
     }
@@ -181,7 +187,8 @@ class IgAccountsUse_Manager{
 
         return [this.accounts,this.accounts_data];
     }
-
+    
+    //Return key de la cuenta.
     get_availAccount(){
        let next_availAccount=this.account_iterator.next();
 
@@ -193,7 +200,7 @@ class IgAccountsUse_Manager{
         this.accounts.push(key);
     }
     
-    //
+    //saca accounts de las posibles avail, y return cuantas avail quedan
     disable_account(key){
         //Sacar la key de la cuenta del array.
 
@@ -203,6 +210,8 @@ class IgAccountsUse_Manager{
                 break;
             }
         }
+
+        return this.accounts.length;
 
     }
 
@@ -218,7 +227,6 @@ class IgAccountsUse_Manager{
         }
     }
 }
-
 
 
 module.exports={IgAccounts_Manager};
