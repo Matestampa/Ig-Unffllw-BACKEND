@@ -123,7 +123,7 @@ class IgAccounts_Manager{
 
             if (reason=="auth"){
                 //Llamar al coso de login
-                this.Accounts_LoginControl.update_authCredentials();
+                //this.Accounts_LoginControl.update_authCredentials();
             }
         }
     }

@@ -63,4 +63,4 @@ async function error_handler(error,AccountsManager,account_key){
 }
 
 
-module.exports={error_handler,SERVICE_ERRORS}
+module.exports={error_handler}
