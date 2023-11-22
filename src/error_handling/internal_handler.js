@@ -5,7 +5,7 @@ async function internalError_handler(error){
     console.log(`${error} DESDE EL INTERNAL HANDLER`);
 
     //Si es critico, tira abajo el server o las requests.
-    if (error.isCritic){
+    if (error.critic){
       //tirar abajo, .....
     }
 }
@@ -14,9 +14,9 @@ async function internalError_handler(error){
 class InternalError extends Error{
     constructor(message,attachedError){
       super(message);
-      this.message=message;
-      this.attachedError=attachedError;
-      this.critic;
+      this.message=message; //str
+      this.attachedError=attachedError; //Error
+      this.critic; //bool
     }
 }
 

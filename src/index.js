@@ -1,8 +1,7 @@
 const {App}=require("./app.js");
 
-const {initialize}=require("./class.js");
-const {dale}=require("./service.js");
+const PORT=3000;
 
-initialize();
+App.listen(PORT,()=>{console.log("Running oN port",PORT)});
 
-dale();
+//hola;

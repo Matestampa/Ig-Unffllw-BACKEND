@@ -16,6 +16,6 @@ function get_IgAccountsManager(){
      return IgAccountsManager;
 }
 
-inititalize_IgAccountsManager();
+//inititalize_IgAccountsManager();
 
 module.exports={inititalize_IgAccountsManager, get_IgAccountsManager};

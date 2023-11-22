@@ -1,8 +1,16 @@
 
 
-async function apiError_handler(error,response){
+function apiError_handler(error,response){
     
+    let response_message=error.message? error.message: error.default_message;
 
+    response.status(error.status_code).json({
+        status:error.status_code,
+        error:{
+            message:response_message,
+            data:error.data 
+        }
+    });
 }
 
 
@@ -10,7 +18,7 @@ async function apiError_handler(error,response){
 class Error4User extends Error{
     constructor(message,data){
       super(message);
-      this.message=message;
+      this.message=message; 
       this.data=data;
       this.default_message;
       this.status_code;
