@@ -99,7 +99,7 @@ async function followers_igRequest(auth_cookies,user_id,cursor){
        
     //console.log(users_data_map);
 
-    return {data: {followers:users_data_map,cursor:next_cursor}};
+    return {followers:users_data_map,cursor:next_cursor};
 
 }
 

@@ -28,7 +28,7 @@ async function getFollowers_service(username){
     let info=await get_userInfo(IgAccountsManager,username);
 
     
-    let followers=await get_followers(IgAccountsManager,info.user_info.id);
+    let followers=await get_followers(IgAccountsManager,info.id);
 
     
     return {followers:followers};

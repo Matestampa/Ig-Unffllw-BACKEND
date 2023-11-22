@@ -71,7 +71,7 @@ async function userInfo_igRequest(account_cookies,username){
     let isPrivate=json_data.data.user.is_private;
     let id=json_data.data.user.id;
 
-    return {user_info:{isPrivate:isPrivate,id:id}};
+    return {isPrivate:isPrivate,id:id};
 
 }
 
