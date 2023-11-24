@@ -5,7 +5,8 @@ const {apiError_handler,DEF_API_ERRORS}=require("../error_handling");
 
 async function entry_point(req,res,next){
      if (!CONFIG_VARS.allow_requests){
-        apiError_handler(DEF_API_ERRORS.SERVER());
+        apiError_handler(DEF_API_ERRORS.SERVER(),res);
+        return 
      }
 
      next();
