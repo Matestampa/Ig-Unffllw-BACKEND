@@ -27,7 +27,7 @@ App.use("/followers",getFollowers_Routes);
 
 //------------------ activar logica inicial ------------------------
 
-//inititalize_IgAccountsManager();
+inititalize_IgAccountsManager();
 
 
 module.exports={App};

@@ -1,9 +1,10 @@
 const {JsonFile_Access}=require("./storage_utils.js");
 const {IgAccounts_LoginControl}=require("../IgAccounts_login");
 
-
 const {internalError_handler}=require("../../error_handling");
 const {NoMoreIgAccounts_Error}=require("./errors.js");
+
+const {join}=require("path");
 
 let IG_ACCOUNTS_DATA={};
 
@@ -23,7 +24,8 @@ class IgAccounts_Manager{
     constructor(){
         
         //Acceso a alamcenamiento externo
-        this.Storage_Access=new JsonFile_Access();
+        this.accountsFile_path=join(__dirname,"./accounts.json");
+        this.Storage_Access=new JsonFile_Access(this.accountsFile_path);
         
         //this.Accounts_LoginControl=new IgAccounts_LoginControl(this);
         
