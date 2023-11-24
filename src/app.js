@@ -2,6 +2,7 @@ const express=require("express");
 const App=express();
 
 //---------------------- importacion de middlewares ---------------------
+const {entry_point}=require("./middlewares");
 
 //----------------------- importacion de rutas ------------------------
 const getFollowers_Routes=require("./routes/getFollowers_Routes.js");
@@ -17,7 +18,7 @@ const {inititalize_IgAccountsManager}=require("./services/IgAccounts_Managment")
 //-------------------- config general express ---------------------
 
 App.use(express.json());
-
+App.use(entry_point);
 
 //-------------------- ENDPOINTS ----------------------------
 

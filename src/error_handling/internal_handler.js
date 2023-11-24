@@ -1,4 +1,4 @@
-
+const {disable_requests}=require("../config/app_config.js");
 
 async function internalError_handler(error){
     //Lo logea
@@ -7,6 +7,7 @@ async function internalError_handler(error){
     //Si es critico, tira abajo el server o las requests.
     if (error.critic){
       //tirar abajo, .....
+      disable_requests();
     }
 }
 
