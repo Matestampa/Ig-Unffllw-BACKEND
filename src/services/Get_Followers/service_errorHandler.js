@@ -34,7 +34,7 @@ async function error_handler(error,AccountsManager,account_key){
         error.message=`Account:${account_key} banned`
         internalError_handler(error)
 
-        throw DEF_API_ERRORS.RETRY();
+        return DEF_API_ERRORS.RETRY();
     }
 
     if (error instanceof NotAuthIgAccount_Error){
@@ -46,7 +46,7 @@ async function error_handler(error,AccountsManager,account_key){
         error.message=`Account:${account_key} not auth`
         internalError_handler(error);
 
-        throw DEF_API_ERRORS.RETRY();
+        return DEF_API_ERRORS.RETRY();
     }
 
     if (error instanceof UnknownIgRequest_Error){
@@ -57,7 +57,7 @@ async function error_handler(error,AccountsManager,account_key){
         internalError_handler(error);
 
 
-        throw DEF_API_ERRORS.SERVER();
+        return DEF_API_ERRORS.SERVER();
     }
 
 }

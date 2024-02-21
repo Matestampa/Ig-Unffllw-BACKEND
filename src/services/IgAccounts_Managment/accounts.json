@@ -36,7 +36,7 @@
         "username":"daleboo89",
         
         "active":true,
-        "banned":false
+        "banned":true
     },
     
 
@@ -56,7 +56,7 @@
         },
         "username":"tito_puente21",
         "active":true,
-        "banned":false
+        "banned":true
     },
 
     "tito_puente30":{
@@ -77,7 +77,7 @@
         "username":"tito_puente30",
         
         "active":true,
-        "banned":false
+        "banned":true
 
     }
 

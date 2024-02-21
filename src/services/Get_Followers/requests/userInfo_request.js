@@ -1,6 +1,7 @@
 //Aca irian las 2 requests que necesitamos para traer los followers
 
 const fetch=require("node-fetch");
+const {HttpsProxyAgent}=require("https-proxy-agent");
 
 const {igRequest_errorHandler}=require("./error_handler.js");
 
@@ -38,18 +39,22 @@ const BASE_URL="https://www.instagram.com/api/v1/users/web_profile_info/?usernam
 
 
 //Return {user_info:{isPrivate,id}, error}
-async function userInfo_igRequest(account_cookies,username){
+async function userInfo_igRequest(username,account_authCookies,proxyUrl){
     
     let URL=BASE_URL+username
 
     let headers={
-        "cookie":account_cookies,
+        "cookie":account_authCookies,
         ...GEN_HEADERS
     }
     
+    //Crear agente de proxy
+    const proxyAgent=new HttpsProxyAgent(proxyUrl);
+
     let response,json_data;
     try{
         response=await fetch(URL,{
+            "agent":proxyAgent,
             "headers":headers,
             "body":null,
             "method":"GET"

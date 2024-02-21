@@ -1,4 +1,6 @@
 const fetch=require("node-fetch");
+const {HttpsProxyAgent}=require("https-proxy-agent");
+
 const {igRequest_errorHandler}=require("./error_handler.js");
 
 const GEN_HEADERS={
@@ -46,10 +48,10 @@ function generate_url(base_url,hash,params){
 
 
 //Return {data:{followers,next_cursor}, error}
-async function followers_igRequest(auth_cookies,user_id,cursor){
+async function followers_igRequest(user_id,cursor,account_authCookies,proxyUrl){
       
     let headers={
-       "cookie":auth_cookies,
+       "cookie":account_authCookies,
        ...GEN_HEADERS
     }
  
@@ -57,6 +59,8 @@ async function followers_igRequest(auth_cookies,user_id,cursor){
        "id":user_id,
        ...GEN_PARAMS
     }
+
+    const proxyAgent = new HttpsProxyAgent(proxyUrl);
 
     if (cursor){ params["after"]=cursor };
 
@@ -68,6 +72,7 @@ async function followers_igRequest(auth_cookies,user_id,cursor){
     let response,json_data;
     try{
         response=await fetch(URL,{
+            "agent":proxyAgent,
             "headers":headers,
             "referrerPolicy": "strict-origin-when-cross-origin",
             "body":null,

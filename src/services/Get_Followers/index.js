@@ -1,5 +1,3 @@
-//Aca iria la funcion q llama el controller.
-
 const {get_IgAccountsManager}=require("../IgAccounts_Managment")
 
 //Import igRequests
@@ -17,51 +15,42 @@ const {error_handler}=require("./service_errorHandler.js");
 const {DEF_API_ERRORS}=require("../../error_handling");
 
 
+let AccountsManager=get_IgAccountsManager();
 
-//Esta funcion es la que llama el controller.
-//Se encarga de llamar a las funciones de "get_userInfo"
-//y de "get_followers", y traer los datos.
-async function getFollowers_service(username){
-    let IgAccountsManager=get_IgAccountsManager();
 
-    
-    let info=await get_userInfo(IgAccountsManager,username);
 
-    
-    let followers=await get_followers(IgAccountsManager,info.id);
 
-    
-    return {followers:followers};
-
-}
-
+//------------------ TRAER INFO NECESARIA DEL USER. ----------------------------
 
 //Return {user_info:{id,isPrivate}}
-async function get_userInfo(AccountsManager,username){
+async function get_userInfo(username){
     
     //Cuenta para hacer la request.
     let req_account=AccountsManager.get_accountForReq();
     
     //Si ya no hay cuentas disponibles
     if (!req_account){
-        throw DEF_API_ERRORS.SERVER("No available Accounts");
+        return  {error:DEF_API_ERRORS.SERVER("No available Accounts"),user_info:null}; 
     }
     
     //hacer la req de la data del perfil
     let user_info;
     
     try{
-        user_info=await userInfo_igRequest(req_account.auth.cookies, username);
+        user_info=await userInfo_igRequest(username,req_account.auth.cookies,
+                                           req_account.proxy.url);
     }
     
     //Ver si tira error la req
     catch(error){
-        await error_handler(error,AccountsManager,req_account.key);
+        let user_error=await error_handler(e,AccountsManager,req_account.key);
+        
+        return {error:user_error,user_info:null};
     }
     
     //Nos fijamos si la cuenta es privada
     if (user_info.isPrivate){
-        throw DEF_API_ERRORS.BAD_REQ("The account is private");
+        return {error:DEF_API_ERRORS.BAD_REQ("The account is private"),user_info:null};
           
     }
 
@@ -70,35 +59,46 @@ async function get_userInfo(AccountsManager,username){
 
 
 
+//----------------- TRAER DE A POCO (CANT_REQ) LOS FOLLOWERS DEL USER. ---------------
+
+const CANT_REQ=3; //Cantidad de req a ig q puede hacer una req del user antes de return
+const MS_BTW_REQ=500; //Milisecs entre requests a ig.
+
 //Return {followers:{user_id:username...}}
-async function get_followers(AccountsManager,user_id){ 
+async function get_followers(user_id,last_cursor){ 
 
     let followers={};
     let cursor;
+
+    let req_cont=0;
+    let req_account;
     
     //Hacemos las requests para traer de a poco los followes
     do{ 
         //Ponemos un rate-limiting
-        sleep(100);
+        sleep(MS_BTW_REQ);
         
         //Cuenta para hacer la request.
         req_account=AccountsManager.get_accountForReq();
         
         //Si ya no hay cuentas disponibles
         if (!req_account){
-            throw DEF_API_ERRORS.SERVER("No available Accounts");
+            return {error:DEF_API_ERRORS.SERVER("No available Accounts"),followers:null};
         }
 
         //hacer la request
         let data={};
         
         try{
-            data=await followers_igRequest(req_account.auth.cookies,user_id,cursor)
+            data=await followers_igRequest(user_id,last_cursor,req_account.auth.cookies,
+                                           req_account.proxy.url);
         } 
         
         //Ver si tiro errror la req
         catch(error){
-            await error_handler(error,AccountsManager,req_account.key);
+            let user_error=await error_handler(error,AccountsManager,req_account.key);
+            
+            return {error:user_error,followers:null};
         }
         
         //Si no, vamos agregando los followers.
@@ -106,6 +106,12 @@ async function get_followers(AccountsManager,user_id){
         followers={...followers,...data.followers};
 
         cursor=data.cursor;
+        
+        //Chequear limites de cant de requests.
+        req_cont++;
+        if (req_cont>=CANT_REQ){
+            break;
+        }
     }
     
     //Mientras el cursor siga teniendo contenido(es decir q todavia falten por traer)
@@ -115,4 +121,4 @@ async function get_followers(AccountsManager,user_id){
 }
 
 
-module.exports={getFollowers_service};
+module.exports={get_userInfo,get_followers};
