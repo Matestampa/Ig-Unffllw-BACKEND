@@ -39,12 +39,14 @@ const BASE_URL="https://www.instagram.com/api/v1/users/web_profile_info/?usernam
 
 
 //Return {user_info:{isPrivate,id}, error}
-async function userInfo_igRequest(username,account_authCookies,proxyUrl){
+async function userInfo_igRequest(username,account_authCookies,account_authHeaders,proxyUrl){
     
+
     let URL=BASE_URL+username
 
     let headers={
         "cookie":account_authCookies,
+        ...account_authHeaders,
         ...GEN_HEADERS
     }
     
@@ -61,7 +63,7 @@ async function userInfo_igRequest(username,account_authCookies,proxyUrl){
         })
 
 
-        json_data=await response.json(); //handlear el error aca para ver q onda*/
+        json_data=await response.json(); //handlear el error aca para ver q onda
 
         if (json_data.require_login){
             throw new Error("not auth")

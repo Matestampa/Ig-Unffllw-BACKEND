@@ -9,7 +9,7 @@ const {apiError_handler,DEF_API_ERRORS}=require("../error_handling");
 async function user_info(req,res){
    let username=req.params.username;
    
-   let {error,user_info}=get_userInfo(username);
+   let {error,user_info}=await get_userInfo(username);
 
    if (error){
       apiError_handler(error,res);
@@ -29,7 +29,7 @@ async function next_followers(req,res){
     let {user_id,last_cursor}=req.body;
     
     
-    let {error,followers}=get_followers(user_id,last_cursor);
+    let {error,followers}=await get_followers(user_id,last_cursor);
 
     if (error){
       apiError_handler(error,res);
