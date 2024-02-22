@@ -29,14 +29,15 @@ async function next_followers(req,res){
     let {user_id,last_cursor}=req.body;
     
     
-    let {error,followers}=await get_followers(user_id,last_cursor);
+    let {error,data}=await get_followers(user_id,last_cursor);
 
     if (error){
       apiError_handler(error,res);
     }
 
     res.status(200).json({
-      followers:followers
+      followers:data.followers,
+      cursor:data.cursor
     });
 }
 

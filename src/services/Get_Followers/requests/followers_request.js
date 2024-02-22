@@ -49,7 +49,7 @@ function generate_url(base_url,hash,params){
 
 //Return {data:{followers,next_cursor}, error}
 async function followers_igRequest(user_id,cursor,account_authCookies,proxyUrl){
-      
+
     let headers={
        "cookie":account_authCookies,
        ...GEN_HEADERS
@@ -105,6 +105,8 @@ async function followers_igRequest(user_id,cursor,account_authCookies,proxyUrl){
     //console.log(users_data_map);
 
     return {followers:users_data_map,cursor:next_cursor};
+
+    //return {followers:{21312:"manu",12312:"yapu"},cursor:"esmikellll"};
 
 }
 

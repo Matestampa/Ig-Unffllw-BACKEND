@@ -68,6 +68,7 @@ const MS_BTW_REQ=500; //Milisecs entre requests a ig.
 
 //Return {followers:{user_id:username...}}
 async function get_followers(user_id,last_cursor){ 
+    let AccountsManager=get_IgAccountsManager();
 
     let followers={};
     let cursor;
@@ -78,14 +79,14 @@ async function get_followers(user_id,last_cursor){
     //Hacemos las requests para traer de a poco los followes
     do{ 
         //Ponemos un rate-limiting
-        sleep(MS_BTW_REQ);
+        await sleep(MS_BTW_REQ);
         
         //Cuenta para hacer la request.
         req_account=AccountsManager.get_accountForReq();
         
         //Si ya no hay cuentas disponibles
         if (!req_account){
-            return {error:DEF_API_ERRORS.SERVER("No available Accounts"),followers:null};
+            return {error:DEF_API_ERRORS.SERVER("No available Accounts"),data:null};
         }
 
         //hacer la request
@@ -100,7 +101,7 @@ async function get_followers(user_id,last_cursor){
         catch(error){
             let user_error=await error_handler(error,AccountsManager,req_account.key);
             
-            return {error:user_error,followers:null};
+            return {error:user_error,data:null};
         }
         
         //Si no, vamos agregando los followers.
@@ -119,7 +120,7 @@ async function get_followers(user_id,last_cursor){
     //Mientras el cursor siga teniendo contenido(es decir q todavia falten por traer)
     while(cursor!="");
 
-    return followers;
+    return {error:null,data:{followers,cursor}};
 }
 
 
