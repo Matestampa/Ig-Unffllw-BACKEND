@@ -22,7 +22,7 @@ let AccountsManager=get_IgAccountsManager();
 
 //------------------ TRAER INFO NECESARIA DEL USER. ----------------------------
 
-//Return {user_info:{id,isPrivate}}
+//Return {user_info: { id, isPrivate, cant_followers} }
 async function get_userInfo(username){
     
     //Cuenta para hacer la request.
