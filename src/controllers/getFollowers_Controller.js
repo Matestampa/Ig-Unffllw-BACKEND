@@ -17,6 +17,7 @@ async function user_info(req,res){
 
    res.status(200).json({
       user_id:user_info.id,
+      cant_followers:user_info.cant_followers
    })
 
 
