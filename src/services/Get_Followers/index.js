@@ -15,8 +15,8 @@ const {error_handler}=require("./service_errorHandler.js");
 const {DEF_API_ERRORS}=require("../../error_handling");
 
 
-let AccountsManager=get_IgAccountsManager();
-
+/*let AccountsManager=get_IgAccountsManager();
+console.log(AccountsManager);*/
 
 
 
@@ -24,6 +24,8 @@ let AccountsManager=get_IgAccountsManager();
 
 //Return {user_info: { id, isPrivate, cant_followers} }
 async function get_userInfo(username){
+
+    let AccountsManager=get_IgAccountsManager();
     
     //Cuenta para hacer la request.
     let req_account=AccountsManager.get_accountForReq();
@@ -37,13 +39,13 @@ async function get_userInfo(username){
     let user_info;
     
     try{
-        user_info=await userInfo_igRequest(username,req_account.auth.cookies,
-                                           req_account.proxy.url);
+        user_info=await userInfo_igRequest(username,req_account.data.cookies,
+                                           req_account.data.headers,req_account.proxy.url);
     }
     
     //Ver si tira error la req
     catch(error){
-        let user_error=await error_handler(e,AccountsManager,req_account.key);
+        let user_error=await error_handler(error,AccountsManager,req_account.key);
         
         return {error:user_error,user_info:null};
     }
@@ -53,8 +55,8 @@ async function get_userInfo(username){
         return {error:DEF_API_ERRORS.BAD_REQ("The account is private"),user_info:null};
           
     }
-
-    return user_info;
+    
+    return {error:null,user_info:user_info};
 }
 
 
@@ -90,8 +92,8 @@ async function get_followers(user_id,last_cursor){
         let data={};
         
         try{
-            data=await followers_igRequest(user_id,last_cursor,req_account.auth.cookies,
-                                           req_account.proxy.url);
+            data=await followers_igRequest(user_id,last_cursor,req_account.data.cookies,
+                                           req_account.data.headers,req_account.proxy.url);
         } 
         
         //Ver si tiro errror la req

@@ -39,15 +39,14 @@ const BASE_URL="https://www.instagram.com/api/v1/users/web_profile_info/?usernam
 
 
 //Return {user_info:{isPrivate,id}, error}
-async function userInfo_igRequest(username,account_authCookies,proxyUrl){
+async function userInfo_igRequest(username,account_authCookies,account_authHeaders,proxyUrl){
     
-    console.log("Funca la request a ig");
-    console.log(username,account_authCookies,proxyUrl);
 
-    /*let URL=BASE_URL+username
+    let URL=BASE_URL+username
 
     let headers={
         "cookie":account_authCookies,
+        ...account_authHeaders,
         ...GEN_HEADERS
     }
     
@@ -77,10 +76,9 @@ async function userInfo_igRequest(username,account_authCookies,proxyUrl){
     }
 
     let isPrivate=json_data.data.user.is_private;
-    let id=json_data.data.user.id;*/
+    let id=json_data.data.user.id;
 
-    return {isPrivate:false,id:123123,cant_followers:27};
-    //return {isPrivate:isPrivate,id:id};
+    return {isPrivate:isPrivate,id:id};
 
 }
 
