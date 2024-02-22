@@ -119,7 +119,7 @@ async function get_followers(user_id,last_cursor){
     //Mientras el cursor siga teniendo contenido(es decir q todavia falten por traer)
     while(cursor!="");
 
-    return followers;
+    return {error:null,followers:followers};
 }
 
 
