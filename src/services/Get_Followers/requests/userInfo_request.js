@@ -41,7 +41,10 @@ const BASE_URL="https://www.instagram.com/api/v1/users/web_profile_info/?usernam
 //Return {user_info:{isPrivate,id}, error}
 async function userInfo_igRequest(username,account_authCookies,proxyUrl){
     
-    let URL=BASE_URL+username
+    console.log("Funca la request a ig");
+    console.log(username,account_authCookies,proxyUrl);
+
+    /*let URL=BASE_URL+username
 
     let headers={
         "cookie":account_authCookies,
@@ -61,7 +64,7 @@ async function userInfo_igRequest(username,account_authCookies,proxyUrl){
         })
 
 
-        json_data=await response.json(); //handlear el error aca para ver q onda*/
+        json_data=await response.json(); //handlear el error aca para ver q onda
 
         if (json_data.require_login){
             throw new Error("not auth")
@@ -74,9 +77,10 @@ async function userInfo_igRequest(username,account_authCookies,proxyUrl){
     }
 
     let isPrivate=json_data.data.user.is_private;
-    let id=json_data.data.user.id;
+    let id=json_data.data.user.id;*/
 
-    return {isPrivate:isPrivate,id:id};
+    return {isPrivate:false,id:123123,cant_followers:27};
+    //return {isPrivate:isPrivate,id:id};
 
 }
 
