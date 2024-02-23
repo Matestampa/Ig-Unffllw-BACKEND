@@ -39,8 +39,8 @@ async function get_userInfo(username){
     let user_info;
     
     try{
-        user_info=await userInfo_igRequest(username,req_account.data.cookies,
-                                           req_account.data.headers,req_account.proxy.url);
+        user_info=await userInfo_igRequest(username,req_account.authData.cookies,
+                                           req_account.authData.headers,req_account.proxyData);
     }
     
     //Ver si tira error la req
@@ -64,7 +64,7 @@ async function get_userInfo(username){
 //----------------- TRAER DE A POCO (CANT_REQ) LOS FOLLOWERS DEL USER. ---------------
 
 const CANT_REQ=3; //Cantidad de req a ig q puede hacer una req del user antes de return
-const MS_BTW_REQ=500; //Milisecs entre requests a ig.
+const MS_BTW_REQ=200; //Milisecs entre requests a ig.
 
 //Return {followers:{user_id:username...}}
 async function get_followers(user_id,last_cursor){ 
@@ -93,8 +93,8 @@ async function get_followers(user_id,last_cursor){
         let data={};
         
         try{
-            data=await followers_igRequest(user_id,last_cursor,req_account.data.cookies,
-                                           req_account.data.headers,req_account.proxy.url);
+            data=await followers_igRequest(user_id,last_cursor,req_account.authData.cookies,
+                                           req_account.proxyData);
         } 
         
         //Ver si tiro errror la req

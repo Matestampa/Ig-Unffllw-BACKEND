@@ -62,9 +62,9 @@ class IgAccounts_Manager{
          else{
             let authData=IG_ACCOUNTS_DATA[account_key]["auth"];
 
-            let proxyData=IG_ACCOUNTS_DATA[account_key]["proxy"];
+            let proxyData=IG_ACCOUNTS_DATA[account_key]["proxy"].url;
 
-            return {key:account_key,data:authData,proxy:proxyData}
+            return {key:account_key,authData:authData,proxy:proxyData}
          }
        }
        while(repeat);
