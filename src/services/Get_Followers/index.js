@@ -23,6 +23,8 @@ console.log(AccountsManager);*/
 //------------------ TRAER INFO NECESARIA DEL USER. ----------------------------
 
 //Return {user_info: { id, isPrivate, cant_followers} }
+const MAX_FOLLOWERS=2000;
+
 async function get_userInfo(username){
 
     let AccountsManager=get_IgAccountsManager();
@@ -54,6 +56,10 @@ async function get_userInfo(username){
     if (user_info.isPrivate){
         return {error:DEF_API_ERRORS.BAD_REQ("The account is private"),user_info:null};
           
+    }
+
+    if (user_info.cant_followers>MAX_FOLLOWERS){
+        return {error:DEF_API_ERRORS.BAD_REQ("Max followers reached"),user_info:null};
     }
     
     return {error:null,user_info:user_info};
