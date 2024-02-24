@@ -9,6 +9,7 @@ const getFollowers_Routes=require("./routes/getFollowers_Routes.js");
 
 //--------------------- importacion de utils de logica iniciales -------------
 const {inititalize_IgAccountsManager}=require("./services/IgAccounts_Managment");
+const {initialize_IgAccountsLoginControl}=require("./services/IgAccounts_login");
 
 
 
@@ -28,6 +29,6 @@ App.use("/followers",getFollowers_Routes);
 //------------------ activar logica inicial ------------------------
 
 inititalize_IgAccountsManager();
-
+initialize_IgAccountsLoginControl();
 
 module.exports={App};

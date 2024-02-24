@@ -1,37 +1,26 @@
-//Aca estaria la funcion que se dedique a hacer los chequeos de
-//de las cookies, y de renovarlas de ser necesario.
+const {IgAccounts_LoginControl}=require("./loginControl_class.js");
+const {get_IgAccountsManager}=require("../IgAccounts_Managment");
 
 
-class IgAccounts_LoginControl{
-    consrtuctor(AccountsManager){
-      this.AccountsManager=AccountsManager;
-    }
+let AccountsLoginControl;
 
-    //Aca iria la func para chequear expire
-
+//Inicializar clase
+function initialize_IgAccountsLoginControl(){
     
-    async update_loginCredentials(account_key){
-        let login_data=this.AccountsManager.get_accountData(account_key,"login");
-        //hacer la req, y etc, etc, etc.
-    }
-    
-    
-    async update_authCredentials(account_key){
-        let auth_data=this.AccountsManager.get_accountData(account_key,"auth");
-        
-        //Request que nos de las cookies
-        
-        //Si todo va bien setear la data y activar la cuenta
-        this.AccountsManager.set_accountData(account_key,"auth") //{cookies:,expire:}
-        this.AccountsManager.enable_account(account_key);
-        //Si va mal, avisar
-    }
-    
-    __isExpired(){}
+    //Traer la de AccountsManager
+    let AccountsManager=get_IgAccountsManager();
 
-    __parseCookies(){}
+    //Instanciar la clase pasandole el manager
+    AccountsLoginControl=new IgAccounts_LoginControl(AccountsManager);
+    
+    //Aplicarle al manager esta clase
+    AccountsManager.set_loginControl(AccountsLoginControl);
 }
 
 
+//Funcion para el scheduler, para chequear la expiracion de las cuentas
+async function check_accountsExpire(){
+    await AccountsLoginControl.check_expire();
+}
 
-module.exports={IgAccounts_LoginControl};
+module.exports={initialize_IgAccountsLoginControl,check_accountsExpire};

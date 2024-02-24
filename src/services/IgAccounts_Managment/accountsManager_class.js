@@ -27,7 +27,7 @@ class IgAccounts_Manager{
         this.accountsFile_path=join(__dirname,"./accounts.json");
         this.Storage_Access=new JsonFile_Access(this.accountsFile_path);
         
-        //this.Accounts_LoginControl=new IgAccounts_LoginControl(this);
+        this.LoginControl;
         
         
         //Traer la data
@@ -70,6 +70,10 @@ class IgAccounts_Manager{
        while(repeat);
     
     } 
+
+    get_allAccountsKeys(){
+        return Object.keys(IG_ACCOUNTS_DATA);
+    }
     
     
     //Da data de la cuenta para lo q sea (la usaria el de login x ejemplo)
@@ -130,6 +134,10 @@ class IgAccounts_Manager{
                 //this.Accounts_LoginControl.update_authCredentials();
             }
         }
+    }
+
+    set_loginControl(loginControl_class){
+        this.LoginControl=loginControl_class;
     }
 
     __create_AccountsUse_Manager(accounts_data){
