@@ -9,7 +9,9 @@ const getFollowers_Routes=require("./routes/getFollowers_Routes.js");
 
 //--------------------- importacion de utils de logica iniciales -------------
 const {inititalize_IgAccountsManager}=require("./services/IgAccounts_Managment");
-const {initialize_IgAccountsLoginControl}=require("./services/IgAccounts_login");
+const {initialize_IgAccountsLoginControl,
+       check_accountsExpire}=require("./services/IgAccounts_login");
+const { sleep } = require("./services/Get_Followers/utils.js");
 
 
 
@@ -29,6 +31,18 @@ App.use("/followers",getFollowers_Routes);
 //------------------ activar logica inicial ------------------------
 
 inititalize_IgAccountsManager();
-initialize_IgAccountsLoginControl();
+inititalize_IgAccountsManager();
+
+/*async function test(){
+    inititalize_IgAccountsManager();
+    
+    await sleep(2000);
+    let loginControl=initialize_IgAccountsLoginControl();
+
+    check_accountsExpire();
+
+}
+
+test();*/
 
 module.exports={App};

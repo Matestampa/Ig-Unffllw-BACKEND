@@ -1,6 +1,7 @@
 const {IgAccounts_LoginControl}=require("./loginControl_class.js");
 const {get_IgAccountsManager}=require("../IgAccounts_Managment");
 
+console.log(get_IgAccountsManager);
 
 let AccountsLoginControl;
 
@@ -15,6 +16,7 @@ function initialize_IgAccountsLoginControl(){
     
     //Aplicarle al manager esta clase
     AccountsManager.set_loginControl(AccountsLoginControl);
+    return AccountsLoginControl;
 }
 
 
