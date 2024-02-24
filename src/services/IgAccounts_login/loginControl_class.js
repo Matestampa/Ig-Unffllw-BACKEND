@@ -11,13 +11,10 @@ class IgAccounts_LoginControl{
       this.AccountsManager=AccountsManager;
     }
 
-    dale(){
-        console.log(this.AccountsManager);
-    }
 
     //Func para chequear el expire
     async check_expire(){
-        let account_keys=this.AccountsManager.get_allAccountsKeys();
+        let account_keys=this.AccountsManager.get_activeAccountsKeys();
   
         for (let key of account_keys){
             let authData=this.AccountsManager.get_accountData(key,"auth");

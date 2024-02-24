@@ -32,9 +32,10 @@ class IgAccounts_Manager{
         //Traer la data
         //Meterla a memoria
         IG_ACCOUNTS_DATA=this.__getAll_fromStorage()
+        this.ACTIVE_ACCOUNTS_KEYS=this.__filter_activeAccounts(IG_ACCOUNTS_DATA);
         
         //Darle la data al "IgAccountUse_Manager"
-        this.AccountsUse_Manager=this.__create_AccountsUse_Manager(IG_ACCOUNTS_DATA);
+        this.AccountsUse_Manager=new IgAccountsUse_Manager(this.ACTIVE_ACCOUNTS_KEYS);
     }
     
     //Da la data de una cuenta para hacer req
@@ -70,8 +71,8 @@ class IgAccounts_Manager{
     
     } 
 
-    get_allAccountsKeys(){
-        return Object.keys(IG_ACCOUNTS_DATA);
+    get_activeAccountsKeys(){
+        return this.ACTIVE_ACCOUNTS_KEYS;
     }
     
     
@@ -106,6 +107,9 @@ class IgAccounts_Manager{
             
             //Habilitar en "IgAccountsUse_Manager"
             this.AccountsUse_Manager.enable_account(account_key);
+            
+            //Añadir key a las activas
+            this.ACTIVE_ACCOUNTS_KEYS.push(account_key);
         
         }
     }
@@ -117,6 +121,9 @@ class IgAccounts_Manager{
             
             //Guardar en memoria y ext.
             this.set_accountData(account_key,"active",false);
+            
+            //Quitar la key de las activas
+            this.ACTIVE_ACCOUNTS_KEYS=this.ACTIVE_ACCOUNTS_KEYS.filter(key=> key!=account_key);
             
             //Deshabilitar en "IgAccountsUse_Manager"
             let accountsLeft=this.AccountsUse_Manager.disable_account(account_key);
@@ -139,7 +146,8 @@ class IgAccounts_Manager{
         this.LoginControl=loginControl_class;
     }
 
-    __create_AccountsUse_Manager(accounts_data){
+
+    __filter_activeAccounts(accounts_data){
         let accounts_keys=[];
         
         //Solo metemos las keys de las account q esten activas
@@ -149,7 +157,7 @@ class IgAccounts_Manager{
             }
         }
 
-        return new IgAccountsUse_Manager(accounts_keys);
+        return accounts_keys;
     }
     
     //Trae la data del almacenamiento externo y la mete a memoria
