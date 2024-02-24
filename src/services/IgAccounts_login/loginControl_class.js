@@ -23,6 +23,9 @@ class IgAccounts_LoginControl{
             if (this.__isExpired(expireDate)){
                 await this.update_authCredentials(key);
             }
+            else{
+                console.log("Todo ok");
+            }
         }
       }
 
