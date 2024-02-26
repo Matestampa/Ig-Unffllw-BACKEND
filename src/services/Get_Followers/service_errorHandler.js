@@ -3,8 +3,7 @@ const {DEF_API_ERRORS,Error4User}=require("../../error_handling");
 
 
 //Importar errores que pueden tener las requests aig.
-const {BannedIgAccount_Error,NotAuthIgAccount_Error,
-       UnknownIgRequest_Error}=require("./requests/error_handler.js");
+const {IG_REQ_ERRORS}=require("../IgRequests");
 
 
 //Importar habdler para los erros internos
@@ -26,7 +25,7 @@ const SERVICE_ERRORS={
 //la logica posterior necesaria de c/u.
 async function error_handler(error,AccountsManager,account_key){
      
-    if (error instanceof BannedIgAccount_Error){
+    if (error instanceof IG_REQ_ERRORS.BannedIgAccount_Error){
         AccountsManager.disable_account(account_key);
         
         //Avisar en algun lado q paso esto. Para que la podamos volver a activar manualmente
@@ -37,7 +36,7 @@ async function error_handler(error,AccountsManager,account_key){
         return DEF_API_ERRORS.RETRY();
     }
 
-    if (error instanceof NotAuthIgAccount_Error){
+    if (error instanceof IG_REQ_ERRORS.NotAuthIgAccount_Error){
 
         //Llamar al login para q inicie session de nuevo
         AccountsManager.disable_account(account_key,"auth");
@@ -49,7 +48,7 @@ async function error_handler(error,AccountsManager,account_key){
         return DEF_API_ERRORS.RETRY();
     }
 
-    if (error instanceof UnknownIgRequest_Error){
+    if (error instanceof IG_REQ_ERRORS.UnknownIgRequest_Error){
         AccountsManager.disable_account(account_key)
         
         //mandarlo a algun loger o lo que sea por error critico

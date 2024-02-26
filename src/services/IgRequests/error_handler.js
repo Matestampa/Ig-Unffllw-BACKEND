@@ -1,5 +1,5 @@
 
-const {InternalError}=require("../../../error_handling");
+const {InternalError}=require("../../error_handling");
 
 function igRequest_errorHandler(error){
     let message=error.message;

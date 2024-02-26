@@ -40,8 +40,8 @@ const BASE_URL="https://www.instagram.com/api/v1/users/web_profile_info/?usernam
 
 //Return {user_info:{isPrivate,id}, error}
 async function userInfo_igRequest(username,account_authCookies,account_authHeaders,proxyUrl){
+    console.log("Dale user info")
     
-
     let URL=BASE_URL+username
 
     let headers={

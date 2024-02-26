@@ -49,7 +49,7 @@ function generate_url(base_url,hash,params){
 
 //Return {data:{followers,next_cursor}, error}
 async function followers_igRequest(user_id,cursor,account_authCookies,proxyUrl){
-
+    //console.log("Dale followers")
     let headers={
        "cookie":account_authCookies,
        ...GEN_HEADERS
