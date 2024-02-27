@@ -67,7 +67,7 @@ async function followers_igRequest(user_id,cursor,account_authCookies,proxyUrl){
     let users_data_map={};
     
     let URL=generate_url(BASE_URL, CONFIG.followers.hash, params)
-    console.log(URL);
+    //console.log(URL);
     
     let response,json_data;
     try{
