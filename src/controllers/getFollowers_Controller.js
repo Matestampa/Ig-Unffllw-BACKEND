@@ -1,3 +1,5 @@
+const {normal_response}=require("../middlewares/response.js");
+
 //------------------- importar servicios --------------------------
 const {get_userInfo,get_followers}=require("../services/Get_Followers");
 
@@ -12,13 +14,14 @@ async function user_info(req,res){
    let {error,user_info}=await get_userInfo(username);
 
    if (error){
-      apiError_handler(error,res);
+      apiError_handler(error,res);return;
    }
-
-   res.status(200).json({
+   
+   normal_response(res,"",{
       user_id:user_info.id,
       cant_followers:user_info.cant_followers
-   })
+   });
+
 
 
 
@@ -32,10 +35,10 @@ async function next_followers(req,res){
     let {error,data}=await get_followers(user_id,last_cursor);
 
     if (error){
-      apiError_handler(error,res);
+      apiError_handler(error,res);return;
     }
 
-    res.status(200).json({
+    normal_response(res,"",{
       followers:data.followers,
       cursor:data.cursor
     });
