@@ -1,9 +1,9 @@
+const {IG_ACCOUNTS_VARS}=require("../../config/igAccounts_config.js");
+
 const {JsonFile_Access}=require("./storage_utils.js");
 
 const {internalError_handler}=require("../../error_handling");
 const {NoMoreIgAccounts_Error}=require("./errors.js");
-
-const {join}=require("path");
 
 let IG_ACCOUNTS_DATA={};
 
@@ -22,9 +22,7 @@ Clase encargada de manejar todo lo relacionado con las cuentas de IG:
 class IgAccounts_Manager{
     constructor(){
         
-        //Acceso a alamcenamiento externo
-        this.accountsFile_path=join(__dirname,"./accounts.json");
-        this.Storage_Access=new JsonFile_Access(this.accountsFile_path);
+        this.Storage_Access=new JsonFile_Access(IG_ACCOUNTS_VARS.accounts_file);
         
         this.LoginControl;
         
