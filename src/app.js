@@ -2,7 +2,7 @@ const express=require("express");
 const App=express();
 
 //---------------------- importacion de middlewares ---------------------
-const {entry_point}=require("./middlewares");
+const {entry_point}=require("./middlewares/entry_point.js");
 
 //----------------------- importacion de rutas ------------------------
 const getFollowers_Routes=require("./routes/getFollowers_Routes.js");
