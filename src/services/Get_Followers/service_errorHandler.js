@@ -7,7 +7,7 @@ const {IG_REQ_ERRORS}=require("../IgRequests");
 
 
 //Importar habdler para los erros internos
-const {internalError_handler}=require("../../error_handling");
+const {internalError_handler,GEN_INT_ERRORS}=require("../../error_handling");
 
 
 /*Errores que pueden haber en las funciones del servicio
@@ -36,7 +36,7 @@ async function error_handler(error,AccountsManager,account_key){
         return DEF_API_ERRORS.RETRY();
     }
 
-    if (error instanceof IG_REQ_ERRORS.NotAuthIgAccount_Error){
+    else if (error instanceof IG_REQ_ERRORS.NotAuthIgAccount_Error){
 
         //Llamar al login para q inicie session de nuevo
         AccountsManager.disable_account(account_key,"auth");
@@ -48,7 +48,7 @@ async function error_handler(error,AccountsManager,account_key){
         return DEF_API_ERRORS.RETRY();
     }
 
-    if (error instanceof IG_REQ_ERRORS.UnknownIgRequest_Error){
+    else if (error instanceof IG_REQ_ERRORS.UnknownIgRequest_Error){
         AccountsManager.disable_account(account_key)
         
         //mandarlo a algun loger o lo que sea por error critico
@@ -56,6 +56,12 @@ async function error_handler(error,AccountsManager,account_key){
         internalError_handler(error);
 
 
+        return DEF_API_ERRORS.SERVER();
+    }
+    
+    //Si es un error desconocido, que vino por otra cosa
+    else{
+        internalError_handler(GEN_INT_ERRORS.UNKNOWN("",error));
         return DEF_API_ERRORS.SERVER();
     }
 

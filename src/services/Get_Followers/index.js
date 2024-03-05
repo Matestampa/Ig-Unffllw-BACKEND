@@ -26,7 +26,7 @@ console.log(AccountsManager);*/
 const MAX_FOLLOWERS=2000;
 
 async function get_userInfo(username){
-
+    console.log("hii")
     let AccountsManager=get_IgAccountsManager();
     
     //Cuenta para hacer la request.
@@ -41,6 +41,7 @@ async function get_userInfo(username){
     let user_info;
     
     try{
+        throw new Error("tu viejaaa");
         user_info=await userInfo_igRequest(username,req_account.authData.cookies,
                                            req_account.authData.headers,req_account.proxyData);
     }
@@ -73,7 +74,8 @@ const CANT_REQ=3; //Cantidad de req a ig q puede hacer una req del user antes de
 const MS_BTW_REQ=200; //Milisecs entre requests a ig.
 
 //Return {followers:{user_id:username...}}
-async function get_followers(user_id,last_cursor){ 
+async function get_followers(user_id,last_cursor){
+    console.log("nananan"); 
     let AccountsManager=get_IgAccountsManager();
 
     let followers={};
