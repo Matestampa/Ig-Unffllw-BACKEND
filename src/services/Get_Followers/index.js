@@ -73,7 +73,7 @@ const CANT_REQ=3; //Cantidad de req a ig q puede hacer una req del user antes de
 const MS_BTW_REQ=200; //Milisecs entre requests a ig.
 
 //Return {followers:{user_id:username...}}
-async function get_followers(user_id,last_cursor){
+async function get_followers(user_id,last_cursor,testCant_req){
     
     let AccountsManager=get_IgAccountsManager();
 
@@ -82,7 +82,11 @@ async function get_followers(user_id,last_cursor){
 
     let req_cont=0;
     let req_account;
-    
+
+    let req_startTime;
+    let req_endTime;
+    let req_totalTime;
+
     //Hacemos las requests para traer de a poco los followes
     do{ 
         //Ponemos un rate-limiting
@@ -100,8 +104,11 @@ async function get_followers(user_id,last_cursor){
         let data={};
         
         try{
+            req_startTime=new Date();
             data=await followers_igRequest(user_id,last_cursor,req_account.authData.cookies,
                                            req_account.proxyData);
+            req_endTime=new Date();
+            req_totalTime=req_endTime-req_startTime;
         } 
         
         //Ver si tiro errror la req
@@ -110,6 +117,7 @@ async function get_followers(user_id,last_cursor){
             
             return {error:user_error,data:null};
         }
+        console.log(`Tiempo de ${req_account.key}: ${req_totalTime}ms`);
         
         //Si no, vamos agregando los followers.
         
@@ -119,13 +127,14 @@ async function get_followers(user_id,last_cursor){
         
         //Chequear limites de cant de requests.
         req_cont++;
-        if (req_cont>=CANT_REQ){
+        if (req_cont>=CANT_REQ || req_cont>=testCant_req){
             break;
         }
     }
     
     //Mientras el cursor siga teniendo contenido(es decir q todavia falten por traer)
     while(cursor!="");
+    console.log("Total Requests",req_cont);
 
     return {error:null,data:{followers,cursor}};
 }

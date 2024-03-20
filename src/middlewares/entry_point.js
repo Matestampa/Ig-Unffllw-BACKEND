@@ -13,7 +13,6 @@ async function entry_point(req,res,next){
      
      //Si estamos en dev_mode(o testing)
      if (APP_GEN_VARS.dev_mode){
-        
         //Verificar que la request contenga la password exclusiva
         let pwd=req.body["excl_pwd"];
         

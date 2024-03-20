@@ -29,10 +29,9 @@ async function user_info(req,res){
 
 //GET "followers/nexts/"   body:{user_id, last_cursor}
 async function next_followers(req,res){
-    let {user_id,last_cursor}=req.body;
+    let {user_id,last_cursor,cant_req}=req.body;
     
-    
-    let {error,data}=await get_followers(user_id,last_cursor);
+    let {error,data}=await get_followers(user_id,last_cursor,cant_req);
 
     if (error){
       apiError_handler(error,res);return;

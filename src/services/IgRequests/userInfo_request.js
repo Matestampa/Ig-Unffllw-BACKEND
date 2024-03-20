@@ -42,7 +42,7 @@ const BASE_URL="https://www.instagram.com/api/v1/users/web_profile_info/?usernam
 async function userInfo_igRequest(username,account_authCookies,account_authHeaders,proxyUrl){
     //console.log("Dale user info")
     
-    let URL=BASE_URL+username
+    /*let URL=BASE_URL+username
 
     let headers={
         "cookie":account_authCookies,
@@ -79,7 +79,7 @@ async function userInfo_igRequest(username,account_authCookies,account_authHeade
     let id=json_data.data.user.id;
     let cant_followers=data.data.user.edge_followed_by.count;
 
-    return {isPrivate:isPrivate, id:id, cant_followers:cant_followers};
+    return {isPrivate:isPrivate, id:id, cant_followers:cant_followers};*/
 
 }
 

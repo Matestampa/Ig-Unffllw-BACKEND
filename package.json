@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "export APP_ENV=prod&& node ./src/index.js",
-    "dev":"set APP_ENV=dev&& node ./src/index.js"
+    "dev":"set APP_ENV=dev&& nodemon ./src/index.js"
   },
   "keywords": [],
   "author": "",
