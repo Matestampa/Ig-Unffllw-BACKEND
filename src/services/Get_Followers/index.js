@@ -78,7 +78,7 @@ async function get_followers(user_id,last_cursor){
     let AccountsManager=get_IgAccountsManager();
 
     let followers={};
-    let cursor;
+    let cursor=last_cursor;
 
     let req_cont=0;
     let req_account;
@@ -100,7 +100,7 @@ async function get_followers(user_id,last_cursor){
         let data={};
         
         try{
-            data=await followers_igRequest(user_id,last_cursor,req_account.authData.cookies,
+            data=await followers_igRequest(user_id,cursor,req_account.authData.cookies,
                                            req_account.proxyData);
         } 
         
