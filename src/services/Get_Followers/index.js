@@ -78,7 +78,7 @@ async function get_followers(user_id,last_cursor,testCant_req){
     let AccountsManager=get_IgAccountsManager();
 
     let followers={};
-    let cursor;
+    let cursor=last_cursor;
 
     let req_cont=0;
     let req_account;
@@ -105,7 +105,7 @@ async function get_followers(user_id,last_cursor,testCant_req){
         
         try{
             req_startTime=new Date();
-            data=await followers_igRequest(user_id,last_cursor,req_account.authData.cookies,
+            data=await followers_igRequest(user_id,cursor,req_account.authData.cookies,
                                            req_account.proxyData);
             req_endTime=new Date();
             req_totalTime=req_endTime-req_startTime;
@@ -120,8 +120,10 @@ async function get_followers(user_id,last_cursor,testCant_req){
         console.log(`Tiempo de ${req_account.key}: ${req_totalTime}ms`);
         
         //Si no, vamos agregando los followers.
-        
+        console.log(data.followers);
+        console.log(Object.keys(data.followers).length);
         followers={...followers,...data.followers};
+        console.log("Cursor",data.cursor);
 
         cursor=data.cursor;
         
