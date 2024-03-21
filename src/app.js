@@ -29,10 +29,10 @@ App.use(entry_point);
 App.use("/followers",getFollowers_Routes);
 
 
-//------------ Activacion de scheduled tasks ------------------------
+/*------------ Activacion de scheduled tasks ------------------------
 for (let task of scheduledTasks_data){
     cron.schedule(task.interval,task.callback);
-}
+}*/
 
 //------------------ activar logica inicial ------------------------
 
