@@ -4,6 +4,9 @@ const App=express();
 //---------------------- importacion de middlewares ---------------------
 const {entry_point}=require("./middlewares/entry_point.js");
 
+const cookieParser=require("cookie-parser");
+const {SessionMiddleware,auhtentication}=require("./middlewares/Session/session.js");
+
 //----------------------- importacion de rutas ------------------------
 const getFollowers_Routes=require("./routes/getFollowers_Routes.js");
 
@@ -22,7 +25,17 @@ const {initialize_IgAccountsLoginControl}=require("./services/IgAccounts_login")
 //-------------------- config general express ---------------------
 
 App.use(express.json());
-App.use(entry_point);
+App.use(cookieParser());
+
+
+App.use(SessionMiddleware);
+App.use(auhtentication);
+
+
+//------------------- middlewares de entrada --------------------
+//App.use(entry_point);
+App.use(auhtentication);
+
 
 //-------------------- ENDPOINTS ----------------------------
 
@@ -33,6 +46,7 @@ App.use("/followers",getFollowers_Routes);
 for (let task of scheduledTasks_data){
     cron.schedule(task.interval,task.callback);
 }
+
 
 //------------------ activar logica inicial ------------------------
 
