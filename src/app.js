@@ -5,7 +5,7 @@ const App=express();
 const {entry_point}=require("./middlewares/entry_point.js");
 
 const cookieParser=require("cookie-parser");
-const {SessionMiddleware,auhtentication}=require("./middlewares/Session/session.js");
+const {SessionMiddleware,authentication}=require("./middlewares/Session/session.js");
 
 //----------------------- importacion de rutas ------------------------
 const getFollowers_Routes=require("./routes/getFollowers_Routes.js");
@@ -29,12 +29,11 @@ App.use(cookieParser());
 
 
 App.use(SessionMiddleware);
-App.use(auhtentication);
 
 
 //------------------- middlewares de entrada --------------------
 //App.use(entry_point);
-App.use(auhtentication);
+App.use(authentication);
 
 
 //-------------------- ENDPOINTS ----------------------------
@@ -42,10 +41,10 @@ App.use(auhtentication);
 App.use("/followers",getFollowers_Routes);
 
 
-//------------ Activacion de scheduled tasks ------------------------
+/*------------ Activacion de scheduled tasks ------------------------
 for (let task of scheduledTasks_data){
     cron.schedule(task.interval,task.callback);
-}
+}*/
 
 
 //------------------ activar logica inicial ------------------------

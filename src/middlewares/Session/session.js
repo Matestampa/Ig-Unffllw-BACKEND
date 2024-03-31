@@ -1,6 +1,7 @@
 const session=require("express-session");
 //const cookieParser=require("cookie-parser");
 
+const {apiError_handler,DEF_API_ERRORS}=require("../../error_handling");
 
 const MemStorage=new session.MemoryStore();
 
@@ -14,11 +15,12 @@ const SessionMiddleware=session({
     resave:false, //no guardamos de nuevo si no hubo cambios
     cookie:{
       maxAge:1000 *60*60*24, //le damos 1 dia
-      httpOnly:false}, //si se puede ver en el front
+      httpOnly:true}, //si se puede ver en el front
 })
 
 
 function authentication(req,res,next){
+   //console.log(req.cookies);
     
     let comboId=get_combo_IpUserAgent(req,res); //hacemos combo
    
@@ -32,7 +34,7 @@ function authentication(req,res,next){
          
          copy_prevSessionAttrs(req.session,JSON.parse(MemStorage.sessions[comboId]));
 
-       }
+      }
     
     }
     
@@ -40,7 +42,7 @@ function authentication(req,res,next){
        console.log("No existe")
        req.session["u_id"]=comboId; //lo dejamos marcado con algo, por lo de borrar la cookie
        req.session["avail_mainReq"]=2;
-       req.session["avail_follReq"]=null;
+       req.session["remain_foll"]=null;
        req.session["auth_follReq"]=null;
        req.session["createdDate"]=Date();
 
@@ -48,6 +50,7 @@ function authentication(req,res,next){
     }
 
     next();
+    //res.status(200).send("Putoo");
 
 }
 
@@ -58,7 +61,7 @@ function get_combo_IpUserAgent(req,res){
    let userAgent=req.get("User-Agent");
 
    if (!ip || !userAgent){
-      //DAR ERROR
+      apiError_handler(DEF_API_ERRORS.BAD_REQ(),res);return;
    }
 
    return ip+userAgent;
@@ -69,7 +72,7 @@ function get_combo_IpUserAgent(req,res){
 function copy_prevSessionAttrs(emptySession, prevSession){
    emptySession["u_id"]=prevSession["u_id"];
    emptySession["avail_mainReq"]=prevSession["avail_mainReq"];
-   emptySession["avail_follReq"]=prevSession["avail_follReq"];
+   emptySession["remain_foll"]=prevSession["remain_foll"];
    emptySession["auth_follReq"]=prevSession["auth_follReq"];
    emptySession["createdDate"]=prevSession["createdDate"];
 }
