@@ -1,5 +1,4 @@
 const session=require("express-session");
-//const cookieParser=require("cookie-parser");
 
 const {apiError_handler,DEF_API_ERRORS}=require("../../error_handling");
 
@@ -20,7 +19,6 @@ const SessionMiddleware=session({
 
 
 function authentication(req,res,next){
-   //console.log(req.cookies);
     
     let comboId=get_combo_IpUserAgent(req,res); //hacemos combo
    
@@ -49,8 +47,8 @@ function authentication(req,res,next){
        //res.status(400).send("NO EXISTE. SE CREA LA SESSION");
     }
 
-    next();
-    //res.status(200).send("Putoo");
+    //next();
+    res.status(200).send("Putoo");
 
 }
 

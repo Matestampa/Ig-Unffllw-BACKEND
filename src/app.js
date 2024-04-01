@@ -4,6 +4,7 @@ const App=express();
 //---------------------- importacion de middlewares ---------------------
 const {entry_point}=require("./middlewares/entry_point.js");
 
+//##### Session #####
 const cookieParser=require("cookie-parser");
 const {SessionMiddleware,authentication}=require("./middlewares/Session/session.js");
 
