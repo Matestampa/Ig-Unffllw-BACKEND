@@ -1,9 +1,7 @@
 const {get_IgAccountsManager}=require("../IgAccounts_Managment")
 
 //Import igRequests
-const {userInfo_igRequest}=require("../IgRequests/userInfo_request.js");
-const {followers_igRequest}=require("../IgRequests/followers_request.js");
-
+const {userInfo_igRequest,followers_igRequest}=require("../IgRequests");
 
 //Import utils
 const {sleep}=require("./utils.js");

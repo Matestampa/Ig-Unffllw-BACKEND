@@ -47,8 +47,8 @@ function authentication(req,res,next){
        //res.status(400).send("NO EXISTE. SE CREA LA SESSION");
     }
 
-    //next();
-    res.status(200).send("Putoo");
+    next();
+    //res.status(200).send("Putoo");
 
 }
 

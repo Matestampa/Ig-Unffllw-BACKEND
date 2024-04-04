@@ -4,7 +4,7 @@ const FAKEAPI_BASEURL="http://localhost:2000/"
 
 async function test_userInfo_igRequest(username){
       
-    let URL=FAKEAPI_BASEURL+`user_info/${username}`;
+    let URL=FAKEAPI_BASEURL+`FAKE_user_info/${username}`;
 
     let response,json_data;
 
@@ -13,14 +13,14 @@ async function test_userInfo_igRequest(username){
             "method":"GET"
         })
 
-        json_data=response.json();
+        json_data=await response.json();
     }
 
     catch(e){
         throw e;
     }
-
-    let isPrivate=json_data.data.is_private;
+    
+    let isPrivate=json_data.data.isPrivate;
     let id=json_data.data.user_id;
     let cant_followers=json_data.data.cant_followers;
 
@@ -34,7 +34,7 @@ async function test_followers_igRequest(user_id,cursor){
     
     if(!cursor){cursor=0};
 
-    let URL=FAKEAPI_BASEURL+`followers/${user_id}/${cursor}`;
+    let URL=FAKEAPI_BASEURL+`FAKE_followers/${user_id}/${cursor}`;
 
     let response,json_data;
 
