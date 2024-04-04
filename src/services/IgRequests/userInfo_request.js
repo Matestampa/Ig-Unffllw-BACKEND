@@ -77,7 +77,7 @@ async function userInfo_igRequest(username,account_authCookies,account_authHeade
 
     let isPrivate=json_data.data.user.is_private;
     let id=json_data.data.user.id;
-    let cant_followers=data.data.user.edge_followed_by.count;
+    let cant_followers=json_data.data.user.edge_followed_by.count;
 
     return {isPrivate:isPrivate, id:id, cant_followers:cant_followers};
 
