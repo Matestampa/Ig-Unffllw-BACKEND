@@ -1,5 +1,7 @@
 const fetch=require("node-fetch");
 
+const {igRequest_errorHandler}=require("./error_handler.js");
+
 const FAKEAPI_BASEURL="http://localhost:2000/"
 
 async function test_userInfo_igRequest(username){
@@ -14,10 +16,22 @@ async function test_userInfo_igRequest(username){
         })
 
         json_data=await response.json();
+        
+        //Error de login
+        if (json_data.require_login){
+            throw new Error("not auth")
+        }
+        
+        //Errro de baneo (lo generamos)
+        if (json_data.bann_error){
+            let err=new Error();
+            err.type="invalid-json";
+            throw err;
+        }
     }
 
     catch(e){
-        throw e;
+        igRequest_errorHandler(e);
     }
     
     let isPrivate=json_data.data.isPrivate;
@@ -44,10 +58,22 @@ async function test_followers_igRequest(user_id,cursor){
         })
 
         json_data=await response.json();
+        
+        //Error de login
+        if (json_data.require_login){
+            throw new Error("not auth")
+        }
+
+        //Errro de baneo (lo generamos)
+        if (json_data.bann_error){
+            let err=new Error();
+            err.type="invalid-json";
+            throw err;
+        }
     }
 
     catch(e){
-        throw e;
+        igRequest_errorHandler(e);
     }
 
     let next_cursor=json_data.data.next_cursor;
