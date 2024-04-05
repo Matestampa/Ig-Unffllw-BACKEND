@@ -10,7 +10,7 @@ const {get_userInfo,get_followers}=require("../services/Get_Followers");
 const {apiError_handler,DEF_API_ERRORS}=require("../error_handling");
 
 
-//GET "followers/user_info/:username"
+//GET "followers/user_info/:username"  params:{username}
 async function user_info(req,res){
    
    if (req.session["avail_mainReq"]<=0){
