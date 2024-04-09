@@ -5,9 +5,7 @@ const RedisStore=require("connect-redis").default;
 
 //Iniciamos client de redis
 let redisClient=createClient({
-    host:REDIS_CONN_VARS.host,
-    port:REDIS_CONN_VARS.port,
-    password:REDIS_CONN_VARS.password,
+    url:`redis://${REDIS_CONN_VARS.host}:${REDIS_CONN_VARS.port}`
 })
 
 //Lo conectamos
