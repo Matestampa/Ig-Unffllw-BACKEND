@@ -52,4 +52,49 @@ async function level0(){
 }
 
 level0();*/
-  
+
+const RedisStore=require("connect-redis").default;
+const {createClient}=require("redis");
+
+let redisClient=createClient({
+    host:"localhost",
+    port:6379,
+})
+
+redisClient.connect().catch(console.log)
+
+let redisStore=new RedisStore({
+   client:redisClient,
+   prefix:"igUnfollowSession:",
+   ttl:1000*60*60*24,
+   disableTouch:true,
+})
+
+async function dale(){
+    //await redisStore.set("age","tute");
+    let value=await sessionStorage.get("age",(err,data)=>{return data});
+    console.log(value)
+    //await redisStore.set("name","yapu");
+    //let all=await sessionStorage.all((err,data)=>{return err});
+
+    //console.log(all);
+
+}
+
+class SessionStorage{
+    constructor(StorageClass){
+        this.Storage=StorageClass;
+    }
+
+    async get(key){
+        return await this.Storage.get(key,(err,data)=>{return data})
+    }
+
+    async set(key,value){
+        await this.Storage.set(key,value);
+    }
+}
+
+let sessionStorage=new SessionStorage(redisStore);
+
+dale();

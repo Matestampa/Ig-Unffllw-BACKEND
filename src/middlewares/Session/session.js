@@ -2,13 +2,16 @@ const session=require("express-session");
 
 const {apiError_handler,DEF_API_ERRORS}=require("../../error_handling");
 
-const {copy_prevSessionAttrs,day_diference}=require("./utils.js")
+const {redisStore,SessionStorageAccess}=require("./storage.js");
 
-const MemStorage=new session.MemoryStore();
+const {copy_prevSessionAttrs}=require("./utils.js")
+
+
+const StorageAccess=new SessionStorageAccess(redisStore);
 
 const SessionMiddleware=session({
     secret:"forrooo",
-    store:MemStorage,
+    store:redisStore,
     
     genid:(req,res)=>{return get_combo_IpUserAgent(req,res)},
 
@@ -20,16 +23,18 @@ const SessionMiddleware=session({
 })
 
 
-function authentication(req,res,next){
+async function authentication(req,res,next){
     
     let comboId=get_combo_IpUserAgent(req,res); //hacemos combo
    
-    if (MemStorage.sessions[comboId]){ //verificamos que exista
+    let prevSession=await StorageAccess.get(comboId)
+    
+    if (prevSession){ //revisar si ya existe la session con ese id.
        
       if (!req.session["createdDate"]){ //si no tiene ese campo quiere decir q se modifico o borro la cookie
                                  //y hay q linkear el obj de session actual, al que estaba guardado
          
-         copy_prevSessionAttrs(req.session,JSON.parse(MemStorage.sessions[comboId]));
+         copy_prevSessionAttrs(req.session,prevSession);
 
       }
     
@@ -43,7 +48,7 @@ function authentication(req,res,next){
        req.session["createdDate"]=new Date();
 
     }
-
+    //res.status(200).send("Tu viejaaa");
     next();
 
 }
@@ -62,28 +67,7 @@ function get_combo_IpUserAgent(req,res){
 }
 
 
-//Funcion para chequear las sessions expiradas
-function check_expiredSessions(){
-     let sessions=MemStorage.sessions;
-
-     for (let id of Object.keys(sessions)){
-         let data=JSON.parse(sessions[id]);
-         let createdDate=data["createdDate"];
-
-         let day_diff=day_diference(new Date(createdDate),new Date())
-      
-         if (day_diff>=1){ //si la dif es mayor a 1 dia, borrar la session
-            console.log("Se destruye la session", id)
-            MemStorage.destroy(id);
-         }
-     }
-
-}
-
-
-
 module.exports={
     SessionMiddleware,
     authentication,
-    check_expiredSessions
 }
