@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "export APP_ENV=prod&& node ./src/index.js",
+    "start": "export APP_ENV=prod NODE_ENV=production&& node ./src/index.js",
     "dev": "set APP_ENV=dev&& nodemon ./src/index.js"
   },
   "keywords": [],
