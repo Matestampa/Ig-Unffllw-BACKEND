@@ -1,16 +1,5 @@
-const {REDIS_CONN_VARS}=require("../../config/redis_config.js");
-const {createClient}=require("redis");
 const RedisStore=require("connect-redis").default;
-
-
-//Iniciamos client de redis
-let redisClient=createClient({
-    url:`redis://${REDIS_CONN_VARS.host}:${REDIS_CONN_VARS.port}`
-})
-
-//Lo conectamos
-redisClient.connect().catch(console.error)
-
+const {redisClient}=require("../../db/redis.js");
 
 //Store de redis para que lo use la session.
 let redisStore=new RedisStore({
