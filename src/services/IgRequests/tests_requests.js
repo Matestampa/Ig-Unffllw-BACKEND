@@ -28,6 +28,11 @@ async function test_userInfo_igRequest(username){
             err.type="invalid-json";
             throw err;
         }
+        
+        //Error unknown
+        if (json_data.unknown_error){
+            throw new Error();
+        }
     }
 
     catch(e){
@@ -69,6 +74,11 @@ async function test_followers_igRequest(user_id,cursor){
             let err=new Error();
             err.type="invalid-json";
             throw err;
+        }
+        
+        //Error unknown
+        if (json_data.unknown_error){
+            throw new Error();
         }
     }
 
