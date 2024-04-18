@@ -9,6 +9,7 @@ const cookieParser=require("cookie-parser");
 const {SessionMiddleware,authentication}=require("./middlewares/Session/session.js");
 
 //----------------------- importacion de rutas ------------------------
+const admin_Routes=require("./routes/admin_Routes.js");
 const getFollowers_Routes=require("./routes/getFollowers_Routes.js");
 
 
@@ -27,6 +28,8 @@ const {initialize_IgAccountsLoginControl}=require("./services/IgAccounts_login")
 
 App.use(express.json());
 App.use(cookieParser());
+
+App.use("/admin",admin_Routes);
 
 
 App.use(SessionMiddleware);

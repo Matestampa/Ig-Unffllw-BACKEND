@@ -53,48 +53,29 @@ async function level0(){
 
 level0();*/
 
-const RedisStore=require("connect-redis").default;
-const {createClient}=require("redis");
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-let redisClient=createClient({
-    host:"localhost",
-    port:6379,
-})
+async function mail(message){
+   await sleep(4000);
+   console.log(message," sended")
+}
 
-redisClient.connect().catch(console.log)
+async function err_handling(){
+    console.log("Logeando error");
+    mail("mensaje del mail");
+}
 
-let redisStore=new RedisStore({
-   client:redisClient,
-   prefix:"igUnfollowSession:",
-   ttl:1000*60*60*24,
-   disableTouch:true,
-})
+async function disable_account(){
+    console.log("Deshabilitando cuenta");
+    err_handling();
+    return "requests";
+}
 
 async function dale(){
-    //await redisStore.set("age","tute");
-    let value=await sessionStorage.get("age",(err,data)=>{return data});
-    console.log(value)
-    //await redisStore.set("name","yapu");
-    //let all=await sessionStorage.all((err,data)=>{return err});
-
-    //console.log(all);
-
+    let h=await disable_account();
+    console.log(h);
 }
-
-class SessionStorage{
-    constructor(StorageClass){
-        this.Storage=StorageClass;
-    }
-
-    async get(key){
-        return await this.Storage.get(key,(err,data)=>{return data})
-    }
-
-    async set(key,value){
-        await this.Storage.set(key,value);
-    }
-}
-
-let sessionStorage=new SessionStorage(redisStore);
 
 dale();
