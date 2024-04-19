@@ -72,6 +72,10 @@ class IgAccounts_Manager{
     get_activeAccountsKeys(){
         return this.ACTIVE_ACCOUNTS_KEYS;
     }
+
+    get_allAccountsData(){
+        return IG_ACCOUNTS_DATA;
+    }
     
     
     //Da data de la cuenta para lo q sea (la usaria el de login x ejemplo)
@@ -84,15 +88,24 @@ class IgAccounts_Manager{
     //Setea data de la cuenta (la usaria el de login x ejemplo)
     set_accountData(account_key,field,data){
         
-        if (IG_ACCOUNTS_DATA[account_key][field]!=undefined){
-            
-            //Guardar en memoria
-            IG_ACCOUNTS_DATA[account_key][field]=data;
-
-            //guardar despues en alamcenamiento ext
-            this.Storage_Access.write(IG_ACCOUNTS_DATA);
-        
+        //Si se actualiza toda la data de una
+        if (field=="ALL"){
+            IG_ACCOUNTS_DATA[account_key]=data
         }
+        
+        //Si se actualiza por campo
+        else{
+            if (IG_ACCOUNTS_DATA[account_key][field]!=undefined){
+            
+                //Guardar en memoria
+                IG_ACCOUNTS_DATA[account_key][field]=data;
+            
+            }
+        }
+        
+        //guardar despues en alamcenamiento ext
+        this.Storage_Access.write(IG_ACCOUNTS_DATA);
+    
     }
     
     //Activa una cuenta

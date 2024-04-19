@@ -1,6 +1,8 @@
 const express=require("express");
 const App=express();
 
+const cors=require("cors");
+
 //---------------------- importacion de middlewares ---------------------
 const {entry_point}=require("./middlewares/entry_point.js");
 
@@ -26,6 +28,7 @@ const {initialize_IgAccountsLoginControl}=require("./services/IgAccounts_login")
 
 //-------------------- config general express ---------------------
 
+App.use(cors());
 App.use(express.json());
 App.use(cookieParser());
 
