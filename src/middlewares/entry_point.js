@@ -4,7 +4,6 @@ const {apiError_handler,DEF_API_ERRORS}=require("../error_handling");
 
 
 async function entry_point(req,res,next){
-     
      //Si las requests no estan habilitadas
      if (!APP_ACCESS_VARS.allow_requests){
         apiError_handler(DEF_API_ERRORS.SERVER(),res);

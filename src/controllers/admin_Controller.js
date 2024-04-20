@@ -1,5 +1,6 @@
 
 const {get_IgAccountsManager}=require("../services/IgAccounts_Managment");
+const {enable_requests}=require("../config/app_config.js");
 
 //-------------------- importar parte de errors --------------------
 const {DEF_API_ERRORS,apiError_handler}=require("../error_handling");
@@ -33,4 +34,10 @@ async function save_account(req,res){
 
 }
 
-module.exports={get_accounts,save_account}
+async function re_enable_requests(req,res){
+    enable_requests();
+
+    normal_response(res,"Requests enabled")
+}
+
+module.exports={get_accounts,save_account,re_enable_requests}

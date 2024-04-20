@@ -35,11 +35,11 @@ App.use(cookieParser());
 App.use("/admin",admin_Routes);
 
 
+App.use(entry_point);
 App.use(SessionMiddleware);
 
 
 //------------------- middlewares de entrada --------------------
-//App.use(entry_point);
 App.use(authentication);
 
 

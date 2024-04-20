@@ -21,9 +21,13 @@ const APP_CONN_VARS={
 
 //Variables de acceso
 const APP_ACCESS_VARS={
-    allow_requests:true,
+    allow_requests:false,
     admin_pwd:process.env.ADMIN_PWD,
     exclusive_req_pwd:process.env.EXCL_REQ_PWD
+}
+
+function enable_requests(){
+    APP_ACCESS_VARS.allow_requests=true;
 }
 
 function disable_requests(){
@@ -31,4 +35,5 @@ function disable_requests(){
 }
 
 module.exports={APP_GEN_VARS,APP_CONN_VARS,
-               APP_ACCESS_VARS,disable_requests};
+               APP_ACCESS_VARS,
+               enable_requests,disable_requests};
