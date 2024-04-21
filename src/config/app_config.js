@@ -21,7 +21,7 @@ const APP_CONN_VARS={
 
 //Variables de acceso
 const APP_ACCESS_VARS={
-    allow_requests:false,
+    allow_requests:true,
     admin_pwd:process.env.ADMIN_PWD,
     exclusive_req_pwd:process.env.EXCL_REQ_PWD
 }
