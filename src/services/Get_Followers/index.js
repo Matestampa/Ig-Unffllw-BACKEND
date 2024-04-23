@@ -1,13 +1,15 @@
 const {get_IgAccountsManager}=require("../IgAccounts_Managment")
 
-//Import igRequests
+//----------------- Import igRequests -----------------------
 const {userInfo_igRequest,followers_igRequest}=require("../IgRequests");
 
-//Import utils
+//---------------- Import utils ----------------------------
 const {sleep}=require("./utils.js");
 
+//---------------- Import const_vars -----------------------
+const service_constVars=require("./const_vars.js");
 
-//Import errors part
+//-------------- Import errors part -------------------------
 const {error_handler}=require("./service_errorHandler.js");
 
 const {DEF_API_ERRORS}=require("../../error_handling");
@@ -21,7 +23,6 @@ console.log(AccountsManager);*/
 //------------------ TRAER INFO NECESARIA DEL USER. ----------------------------
 
 //Return {user_info: { id, isPrivate, cant_followers} }
-const MAX_FOLLOWERS=2000;
 
 async function get_userInfo(username){
     
@@ -56,7 +57,7 @@ async function get_userInfo(username){
           
     }
 
-    if (user_info.cant_followers>MAX_FOLLOWERS){
+    if (user_info.cant_followers> service_constVars.MAX_FOLLOWERS ){
         return {error:DEF_API_ERRORS.BAD_REQ("Max followers reached"),user_info:null};
     }
     
@@ -67,8 +68,6 @@ async function get_userInfo(username){
 
 //----------------- TRAER DE A POCO (CANT_REQ) LOS FOLLOWERS DEL USER. ---------------
 
-const CANT_REQ=3; //Cantidad de req a ig q puede hacer una req del user antes de return
-const MS_BTW_REQ=200; //Milisecs entre requests a ig.
 
 //Return {followers:{user_id:username...}}
 async function get_followers(user_id,last_cursor){
@@ -84,7 +83,7 @@ async function get_followers(user_id,last_cursor){
     //Hacemos las requests para traer de a poco los followes
     do{ 
         //Ponemos un rate-limiting
-        await sleep(MS_BTW_REQ);
+        await sleep( service_constVars.MS_BTW_REQ );
         
         //Cuenta para hacer la request.
         req_account=AccountsManager.get_accountForReq();
@@ -117,7 +116,7 @@ async function get_followers(user_id,last_cursor){
         
         //Chequear limites de cant de requests.
         req_cont++;
-        if (req_cont>=CANT_REQ){
+        if (req_cont>= service_constVars.CANT_REQ ){
             break;
         }
     }
