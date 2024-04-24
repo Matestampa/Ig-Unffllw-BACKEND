@@ -22,6 +22,7 @@ function igRequest_errorHandler(error){
 class NotAuthIgAccount_Error extends InternalError{
     constructor(message,attachedError){
         super(message,attachedError);
+        this.name="NotAuthIgAccount_Error"
         this.critic=false;
     }
 }
@@ -30,6 +31,7 @@ class NotAuthIgAccount_Error extends InternalError{
 class BannedIgAccount_Error extends InternalError{
     constructor(message,attachedError){
         super(message,attachedError);
+        this.name="BannedIgAccount_Error"
         this.critic=false;
     }
 }
@@ -38,6 +40,7 @@ class BannedIgAccount_Error extends InternalError{
 class UnknownIgRequest_Error extends InternalError{
     constructor(message,attachedError){
         super(message,attachedError);
+        this.name="UnknownIgRequest_Error"
         this.critic=true;
     }
 }

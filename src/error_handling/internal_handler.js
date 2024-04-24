@@ -17,6 +17,7 @@ async function internalError_handler(error){
 class InternalError extends Error{
     constructor(message,attachedError){
       super(message);
+      this.name="InternalError"
       this.message=message; //str
       this.attachedError=attachedError; //Error
       this.critic; //bool
@@ -26,6 +27,7 @@ class InternalError extends Error{
 class UnknownError extends InternalError{
   constructor(message,attachedError){
     super(message,attachedError);
+    this.name="UnknownError"
     this.critic=true;
   }
 }
