@@ -53,29 +53,54 @@ async function level0(){
 
 level0();*/
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+/*const nodemailer=require("nodemailer");
 
-async function mail(message){
-   await sleep(4000);
-   console.log(message," sended")
-}
+const transporter=nodemailer.createTransport({
+    service:"gmail",
+    host:"smtp.gmail.com",
+    auth:{
+        user:"smikeljordan@gmail.com",
+        pass:"vpcu sbkf scrf yqoa"
+    }
+})
 
-async function err_handling(){
-    console.log("Logeando error");
-    mail("mensaje del mail");
-}
+let messageData={
+   from:{
+    name:"IgUnfollowApp",
+    address: "smikeljordan@gmail.com"
+   },
+   to:"paredpiso5@gmail.com",
 
-async function disable_account(){
-    console.log("Deshabilitando cuenta");
-    err_handling();
-    return "requests";
+   subject:"Prueba del mail en node",
+   text:"hola desde nodeeeee",
 }
 
 async function dale(){
-    let h=await disable_account();
-    console.log(h);
+    await transporter.sendMail(messageData);
+    console.log("Mail enviado");
 }
 
+dale();*/
+
+class NormalError extends Error{
+    constructor(message){
+        super(message)
+        this.name="NormalError"
+        this.message=message;
+    }
+}
+
+function dale(){
+    try{
+        throw new NormalError("putto");
+    }
+
+    catch(e){
+        console.log(e.name);
+    }
+}
+
+
 dale();
+
+
