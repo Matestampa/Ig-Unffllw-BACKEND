@@ -4,6 +4,8 @@ const {igRequest_errorHandler}=require("./error_handler.js");
 
 const FAKEAPI_BASEURL="http://localhost:2000/"
 
+
+//-------------------- USERINFO RESQUEST -------------------------
 async function test_userInfo_igRequest(username){
       
     let URL=FAKEAPI_BASEURL+`FAKE_user_info/${username}`;
@@ -49,6 +51,7 @@ async function test_userInfo_igRequest(username){
   
 }
 
+//-------------------- FOLLOWERS RESQUEST -------------------------
 async function test_followers_igRequest(user_id,cursor){
     
     if(!cursor){cursor=0};
@@ -95,15 +98,40 @@ async function test_followers_igRequest(user_id,cursor){
 
 }
 
-async function test_auth_igRequest(){
-     return;
+//-------------------- LOGIN RESQUEST ----------------------------
+
+async function test_login_igRequest(username,password){
+    
+    let URL=FAKEAPI_BASEURL+`FAKE_login/${username}/${password}`;
+    
+    let cookies;
+    try{
+        let response=await fetch(URL,{
+            "method":"GET"
+        })
+
+        let json_data=await response.json();
+        
+        //Si tira error de login
+        if (json_data.status=="fail"){
+            throw new Error("bad login");
+        }
+        else{
+            cookies=json_data.data;
+        }
+    }
+    catch(e){
+        igRequest_errorHandler(e);
+    }
+    
+    return cookies;
 }
 
 
 const TEST_REQUESTS={
     userInfo:test_userInfo_igRequest,
     followers:test_followers_igRequest,
-    auth:test_auth_igRequest
+    login:test_login_igRequest
 };
 
 module.exports={

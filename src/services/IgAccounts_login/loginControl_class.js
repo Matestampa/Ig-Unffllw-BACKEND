@@ -1,6 +1,18 @@
+const {login_igRequest}=require("../IgRequests")
+
+const {day_diference,clean_cookies,
+      get_cookiesExpireDate}=require("./utils.js");
+
+const {internalError_handler}=require("../../error_handling")
 
 
-const DAYS_TO_EXPIRE=2; //Limite de dias anteriores a la fecha de expiracion
+//---------------------------------------------------------------------------
+const DAYS_TO_EXPIRE=2; //Limite de dias anteriores a la fecha de expiracion,
+                        //para volver a actualizar las credenciales.
+
+const AUTHCOOKIES_MAX_AGE=7776000; //para calcular la fecha de expire al recibir 
+                                   //nuevas cookies de auth
+//---------------------------------------------------------------------------------
 
 /*Clase encargada de todo lo que tenga que ver con el login y autenticacion
   de las cuentas. Los datos, las requests para obtenerlos, y su verificacion
@@ -21,10 +33,11 @@ class IgAccounts_LoginControl{
             let expireDate=authData.expires;
   
             if (this.__isExpired(expireDate)){
+                console.log(`${key} expired`)
                 await this.update_authCredentials(key);
             }
             else{
-                console.log("Todo ok");
+                console.log(`${key} todo OK`);
             }
         }
       }
@@ -37,25 +50,35 @@ class IgAccounts_LoginControl{
     
     
     async update_authCredentials(account_key){
-        let auth_data=this.AccountsManager.get_accountData(account_key,"auth");
+        let login_data=this.AccountsManager.get_accountData(account_key,"login");
+        let acc_proxyData=this.AccountsManager.get_accountData(account_key,"proxy")
         
-        //Request que nos de las cookies
-        /*let new_authData={
-            "expires": new Date("2024-8-10"),
-            "cookies": "csrftoken=o7aS6VXop2pkaWYuux7T2yo5Pa1OvpmV; rur=\"NCG\\05463141326590\\0541731619700:01f789d76f63f4b82504770c576aa2063184a5e922571c4e5a9fd89aca98212b400a8f9c\"; ds_user_id=63141326590; sessionid=63141326590%3A5Nbb7ysMNPiTKm%3A21%3AAYdEykn7QUMhbcFd36N5IV_EEoZ7bq2RapPApamn6w; ",
-            "headers": {"x-csrftoken": "o7aS6VXop2pkaWYuux7T2yo5Pa1OvpmV"}
-        }*/
+        //Hacer Request que nos devuelve unas cookies en forma de array.
+        let resp_cookies;
+        try{
+          resp_cookies=await login_igRequest(login_data.username,login_data.psd,
+                                        login_data.cookies,login_data.headers,
+                                        acc_proxyData.url);
+        }
+        catch(e){
+          this.AccountsManager.disable_account(account_key);
+          
+          internalError_handler(e);
+          return;
+        }
+        
+        //Parsear esas cookies, para extraer la nueva data para auth.
+        let new_authData=this.__parseCookies(resp_cookies);
         
         //Si todo va bien setear la data y activar la cuenta
         this.AccountsManager.set_accountData(account_key,"auth",new_authData) //{cookies:,expire:}
-        this.AccountsManager.enable_account(account_key);
-        console.log(`Account ${account_key} updated`);
+        this.AccountsManager.enable_account(account_key); //(medio al pedo?)
         
-        //Si va mal, avisar
+        console.log(`Account ${account_key} updated`);
+        //Mandar mail
     }
     
     __isExpired(expireDate){
-        console.log(expireDate);
         
         if (day_diference(new Date(expireDate),new Date()) < DAYS_TO_EXPIRE){
             return true;
@@ -63,17 +86,22 @@ class IgAccounts_LoginControl{
         return false;
     }
 
-    __parseCookies(){}
-}
+    __parseCookies(resp_cookiesArr){
+        let cookies_str=clean_cookies(resp_cookiesArr);
 
+        let headers={
+            "x-csrftoken":cookies_str.split(";")[0].split("=")[1]
+        }
+        
+        //Calcular fecha de expiracion
+        let expire_date=get_cookiesExpireDate(AUTHCOOKIES_MAX_AGE);
 
-
-//Util function
-function day_diference(date1,date2){
-    let ms_diff=date1.getTime()-date2.getTime();
+        //return clean_cookies
+        return {"expires":expire_date,"cookies":cookies_str,"headers":headers};
     
-    return Math.abs(ms_diff / (1000*60*60*24));
+    }
 }
+
 
 
 
