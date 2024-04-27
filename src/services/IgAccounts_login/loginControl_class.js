@@ -3,7 +3,7 @@ const {login_igRequest}=require("../IgRequests")
 const {day_diference,clean_cookies,
       get_cookiesExpireDate}=require("./utils.js");
 
-const {internalError_handler}=require("../../error_handling")
+const {error_handler}=require("./service_errorHandler.js");
 
 
 //---------------------------------------------------------------------------
@@ -34,10 +34,16 @@ class IgAccounts_LoginControl{
   
             if (this.__isExpired(expireDate)){
                 console.log(`${key} expired`)
-                await this.update_authCredentials(key);
+                
+                //actualizamos los datos de auth
+                let error=await this.update_authCredentials(key);
+                
+                if (error){ //si hay error lo mandamos al error handler
+                   error_handler(error,this.AccountsManager,key);
+                }
             }
             else{
-                console.log(`${key} todo OK`);
+                console.log(`${key} NOT expired`);
             }
         }
       }
@@ -61,10 +67,8 @@ class IgAccounts_LoginControl{
                                         acc_proxyData.url);
         }
         catch(e){
-          this.AccountsManager.disable_account(account_key);
           
-          internalError_handler(e);
-          return;
+          return e;
         }
         
         //Parsear esas cookies, para extraer la nueva data para auth.
