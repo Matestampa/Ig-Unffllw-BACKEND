@@ -34,10 +34,20 @@ async function save_account(req,res){
 
 }
 
+async function enable_account(req,res){
+    let {key}=req.body;
+    let AccountsManager=get_IgAccountsManager();
+
+    AccountsManager.enable_account(key);
+    
+    normal_response(res,"Account active again");
+}
+
+
 async function re_enable_requests(req,res){
     enable_requests();
 
     normal_response(res,"Requests enabled")
 }
 
-module.exports={get_accounts,save_account,re_enable_requests}
+module.exports={get_accounts,save_account,enable_account,re_enable_requests}
