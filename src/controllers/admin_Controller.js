@@ -8,9 +8,11 @@ const {DEF_API_ERRORS,apiError_handler}=require("../error_handling");
 //--------------------- middlewares -------------------------------------------
 const {normal_response}=require("../middlewares/response.js");
 
+
+//Traer toda la data de las cuentas.
 async function get_accounts(req,res){
      
-    //traer accounts con el IgAccountsManager
+    //Traer accounts con el IgAccountsManager
     let AccountsManager=get_IgAccountsManager();
     
     let accounts=AccountsManager.get_allAccountsData();
@@ -20,34 +22,36 @@ async function get_accounts(req,res){
 
 }
 
-
+//Guardar data de una cuenta. Por Agregar una nueva, o por activarla.
 async function save_account(req,res){
-    let {key,data}=req.body
+    let {key,data,action}=req.body
+    
+    let resp_message="Account saved in PRODUCTION";
 
-    //Guardar data con el IgAccountsManger
     let AccountsManager=get_IgAccountsManager();
-
+    
+    //Primero si o si guardar la data.
     AccountsManager.set_accountData(key,"ALL",data);
 
-    //Dar response de ok
-    normal_response(res,"Account saved in PRODUCTION")
-
-}
-
-async function enable_account(req,res){
-    let {key}=req.body;
-    let AccountsManager=get_IgAccountsManager();
-
-    AccountsManager.enable_account(key);
+    //Si el cambio de data es para activar la cuenta, o simplemente q "active" sea "true",
+    //(ya que puede ser la primera vez q se agrega cuenta):
+    if (action=="enable" || data.active==true){
+        
+        AccountsManager.enable_account(key,true);//actualizamos interno de Account Manager tmb
+                                                 //(para q la reconozca como activa en tiempo real y
+                                                 //ya la pueda usar.)
+        resp_message+=" & Account Enabled";
+    }
     
-    normal_response(res,"Account active again");
+    //Dar response de ok
+    normal_response(res,resp_message)
 }
 
-
+//Volver a activar las requests a la App.
 async function re_enable_requests(req,res){
     enable_requests();
 
     normal_response(res,"Requests enabled")
 }
 
-module.exports={get_accounts,save_account,enable_account,re_enable_requests}
+module.exports={get_accounts,save_account,re_enable_requests}

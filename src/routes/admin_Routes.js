@@ -11,8 +11,6 @@ router.get("/get_accounts",Controller.get_accounts);
 
 router.post("/save_account",Controller.save_account);
 
-router.post("/enable_account",Controller.enable_account);
-
 router.post("/enable_requests",Controller.re_enable_requests);
 
 
