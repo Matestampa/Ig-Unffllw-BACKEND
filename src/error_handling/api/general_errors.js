@@ -1,21 +1,3 @@
-
-
-function apiError_handler(error,response){
-    
-    let response_message=error.message? error.message: error.default_message;
-
-    response.status(error.status_code).json({
-        status:error.status_code,
-        error:{
-            message:response_message,
-            code:error.code,
-            sub_code:error.sub_code ? error.sub_code : undefined,
-            data:error.data 
-        }
-    });
-}
-
-
 //Clase Base de errors para la api.
 class Error4User extends Error{
     constructor(message,data){
@@ -29,7 +11,8 @@ class Error4User extends Error{
 }
 
 
-//Clases hijass
+//------------ Clases hijas -------------------------
+
 class Api_NotAuth_Error extends Error4User{
     constructor(message,data){
         super(message,data);
@@ -80,4 +63,5 @@ const DEF_API_ERRORS={
 }
 
 
-module.exports={apiError_handler,Error4User,DEF_API_ERRORS};
+module.exports={Error4User,Api_NotAuth_Error,Api_BadRequest_Error,
+                Api_Retry_Error,Api_ServerError,DEF_API_ERRORS};
