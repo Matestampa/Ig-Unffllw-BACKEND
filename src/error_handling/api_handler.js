@@ -8,6 +8,8 @@ function apiError_handler(error,response){
         status:error.status_code,
         error:{
             message:response_message,
+            code:error.code,
+            sub_code:error.sub_code ? error.sub_code : undefined,
             data:error.data 
         }
     });
@@ -20,6 +22,7 @@ class Error4User extends Error{
       super(message);
       this.message=message; 
       this.data=data;
+      this.code;
       this.default_message;
       this.status_code;
     }
@@ -30,7 +33,8 @@ class Error4User extends Error{
 class Api_NotAuth_Error extends Error4User{
     constructor(message,data){
         super(message,data);
-
+        
+        this.code="NOT_AUTH";
         this.default_message="Unhautorized user"
         this.status_code=401;
     }
@@ -39,7 +43,8 @@ class Api_NotAuth_Error extends Error4User{
 class Api_BadRequest_Error extends Error4User{
     constructor(message,data){
         super(message,data);
-
+        
+        this.code="BAD_REQ";
         this.default_message="Bad request"
         this.status_code=404;
     }
@@ -49,6 +54,7 @@ class Api_Retry_Error extends Error4User{
     constructor(message,data){
         super(message,data)
         
+        this.code="RETRY";
         this.status_code=404;
         this.default_message="Retry the request";
     }
@@ -57,7 +63,8 @@ class Api_Retry_Error extends Error4User{
 class Api_ServerError extends Error4User{
     constructor(message,data){
         super(message,data);
-
+        
+        this.code="SERVER";
         this.default_message="Server malfunc"
         this.status_code=500;
     }
