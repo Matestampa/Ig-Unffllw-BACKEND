@@ -7,14 +7,14 @@ const {normal_response}=require("../middlewares/response.js");
 const {get_userInfo,get_followers}=require("../services/Get_Followers");
 
 //-------------------- importar parte de errors --------------------
-const {apiError_handler,DEF_API_ERRORS}=require("../error_handling");
+const {apiError_handler,FOLLOWERS_ERRORS}=require("../error_handling");
 
 
 //GET "followers/user_info/:username"  params:{username}
 async function user_info(req,res){
    
    if (req.session["avail_mainReq"]<=0){
-      apiError_handler(DEF_API_ERRORS.BAD_REQ("No available requests"),res);return;
+      apiError_handler(FOLLOWERS_ERRORS.NOMORE_REQ(),res);return;
 
    }
 
@@ -59,7 +59,7 @@ async function next_followers(req,res){
     if (req.session["auth_follReq"]!=req.cookies["auth_follReq"]  
        || req.session["remain_foll"]<=0 || req.session["usId_follReq"] != user_id){
       
-      apiError_handler(DEF_API_ERRORS.BAD_REQ("No available requests"),res); return;
+      apiError_handler(FOLLOWERS_ERRORS.NOMORE_REQ(),res); return;
     }
     
     

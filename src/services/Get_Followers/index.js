@@ -12,7 +12,7 @@ const service_constVars=require("./const_vars.js");
 //-------------- Import errors part -------------------------
 const {error_handler}=require("./service_errorHandler.js");
 
-const {DEF_API_ERRORS}=require("../../error_handling");
+const {DEF_API_ERRORS,FOLLOWERS_ERRORS}=require("../../error_handling");
 
 
 /*let AccountsManager=get_IgAccountsManager();
@@ -33,7 +33,7 @@ async function get_userInfo(username){
     
     //Si ya no hay cuentas disponibles
     if (!req_account){
-        return  {error:DEF_API_ERRORS.SERVER("No available Accounts"),user_info:null}; 
+        return  {error:DEF_API_ERRORS.SERVER("No available accounts"),user_info:null}; 
     }
     
     //hacer la req de la data del perfil
@@ -53,12 +53,12 @@ async function get_userInfo(username){
     
     //Nos fijamos si la cuenta es privada
     if (user_info.isPrivate){
-        return {error:DEF_API_ERRORS.BAD_REQ("The account is private"),user_info:null};
+        return {error:FOLLOWERS_ERRORS.PRIVATE_ACCOUNT(),user_info:null};
           
     }
 
     if (user_info.cant_followers> service_constVars.MAX_FOLLOWERS ){
-        return {error:DEF_API_ERRORS.BAD_REQ("Max followers reached"),user_info:null};
+        return {error:FOLLOWERS_ERRORS.FOLL_EXCESS(),user_info:null};
     }
     
     return {error:null,user_info:user_info};
