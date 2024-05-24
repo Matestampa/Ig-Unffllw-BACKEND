@@ -87,7 +87,6 @@ class IgAccounts_Manager{
     
     //Setea data de la cuenta (la usaria el de login x ejemplo)
     set_accountData(account_key,field,data){
-        console.log(this.get_activeAccountsKeys());
         
         //Si se actualiza toda la data de una
         if (field=="ALL"){

@@ -19,7 +19,7 @@ const SessionMiddleware=session({
     resave:false, //no guardamos de nuevo si no hubo cambios
     cookie:{
       maxAge:1000 *60*60*24, //le damos 1 dia
-      httpOnly:true}, //si se puede ver en el front
+      httpOnly:false}, //si se puede ver en el front
 })
 
 
