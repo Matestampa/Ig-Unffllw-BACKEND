@@ -6,7 +6,7 @@ const {apiError_handler,DEF_API_ERRORS,FOLLOWERS_ERRORS}=require("../error_handl
 async function entry_point(req,res,next){
      //Si las requests no estan habilitadas
      if (!APP_ACCESS_VARS.allow_requests){
-        apiError_handler(FOLLOWERS_ERRORS.NOMORE_REQ(),res);
+        apiError_handler(FOLLOWERS_ERRORS.REQUESTS_DISABLED(),res);
         return 
      }
      
