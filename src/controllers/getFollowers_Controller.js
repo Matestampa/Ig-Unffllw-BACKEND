@@ -36,7 +36,10 @@ async function user_info(req,res){
    //Setear el token en la cookie y la session, para hacer las req a followers
    let authToken=uuid.v4();
 
-   res.cookie("auth_follReq",authToken)
+   res.cookie("auth_follReq",authToken,{
+      secure:true,
+      sameSite:"none"
+   });
    req.session["auth_follReq"]=authToken;
    
    //Setear en la session el user_id, del que deben traerse los followers
@@ -51,9 +54,11 @@ async function user_info(req,res){
 
 }
 
-//GET "followers/nexts/"   body:{user_id, last_cursor}
+//POST "followers/nexts/"   body:{user_id, last_cursor}
 async function next_followers(req,res){
-    let {user_id,last_cursor}=req.body; 
+    let {user_id,last_cursor}=req.body;
+    
+    console.log(last_cursor);
 
     //Control de session, para verificar token, y para no pasar limites
     if (req.session["auth_follReq"]!=req.cookies["auth_follReq"]  

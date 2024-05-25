@@ -28,7 +28,15 @@ const {initialize_IgAccountsLoginControl}=require("./services/IgAccounts_login")
 
 //-------------------- config general express ---------------------
 
-App.use(cors());
+App.use(cors(
+    {
+        credentials:true,
+        origin:(origin,callback)=>{
+            callback(null,true);
+        }
+    }
+));
+
 App.use(express.json());
 App.use(cookieParser());
 

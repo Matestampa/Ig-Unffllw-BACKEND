@@ -18,6 +18,8 @@ const SessionMiddleware=session({
     saveUninitialized:false, //si no se modifico no se guarda nada
     resave:false, //no guardamos de nuevo si no hubo cambios
     cookie:{
+      sameSite:"none",
+      secure:true,
       maxAge:1000 *60*60*24, //le damos 1 dia
       httpOnly:false}, //si se puede ver en el front
 })
