@@ -4,10 +4,12 @@ const uuid=require("uuid");
 const {normal_response}=require("../middlewares/response.js");
 
 //------------------- importar servicios --------------------------
-const {get_userInfo,get_followers}=require("../services/Get_Followers");
+const {check_userExistence,get_userInfo,
+       get_followers}=require("../services/Get_Followers");
 
 //-------------------- importar parte de errors --------------------
 const {apiError_handler,FOLLOWERS_ERRORS}=require("../error_handling");
+
 
 
 //GET "followers/user_info/:username"  params:{username}
@@ -19,8 +21,16 @@ async function user_info(req,res){
    }
 
    let username=req.params.username;
+
+   let error;
    
-   let {error,user_info}=await get_userInfo(username);
+   //Chequear primero si existe
+   ({error}=await check_userExistence(username));
+
+   if (error){apiError_handler(error,res);return;}
+   
+   //Luego traer info
+   ({error,user_info}=await get_userInfo(username));
 
    if (error){
       apiError_handler(error,res);return;

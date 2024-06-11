@@ -19,6 +19,13 @@ const {DEF_API_ERRORS,FOLLOWERS_ERRORS}=require("../../error_handling");
 console.log(AccountsManager);*/
 
 
+//----------------- CHEQUEAR SI EXSITE EL USER -------------------------------
+
+async function check_userExistence(username){
+    //llamar a la lambda
+}
+
+
 
 //------------------ TRAER INFO NECESARIA DEL USER. ----------------------------
 
@@ -128,4 +135,4 @@ async function get_followers(user_id,last_cursor){
 }
 
 
-module.exports={get_userInfo,get_followers};
+module.exports={check_userExistence,get_userInfo,get_followers};
