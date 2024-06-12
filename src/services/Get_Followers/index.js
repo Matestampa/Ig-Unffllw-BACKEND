@@ -16,7 +16,7 @@ const {sleep}=require("./utils.js");
 const service_constVars=require("./const_vars.js");
 
 //-------------- Import errors part -------------------------
-const {error_handler}=require("./service_errorHandler.js");
+const {error_handler,SERVICE_ERRORS}=require("./service_errorHandler.js");
 
 const {DEF_API_ERRORS,FOLLOWERS_ERRORS}=require("../../error_handling");
 
@@ -46,11 +46,10 @@ async function check_userExistence(username){
         let resp= await lambda.invoke(params).promise();
         let data= JSON.parse(resp.Payload);
         accountExist=JSON.parse(data.body).result;
-        console.log(accountExist);
         
     } 
     catch(e){
-        let user_error=error_handler(e);
+        let user_error=await error_handler(SERVICE_ERRORS.BANNED_LAMBDA("",e));
         return {error:user_error};
     }
 

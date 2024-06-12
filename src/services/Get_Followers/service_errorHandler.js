@@ -7,15 +7,23 @@ const {IG_REQ_ERRORS}=require("../IgRequests");
 
 
 //Importar habdler para los erros internos
-const {internalError_handler,GEN_INT_ERRORS}=require("../../error_handling");
+const {internalError_handler,GEN_INT_ERRORS,InternalError}=require("../../error_handling");
 
 
-/*Errores que pueden haber en las funciones del servicio
+
+/*---- Algunos errores que pueden haber en las funciones del servicio -----*/
 const SERVICE_ERRORS={
-    //PRIVATE_PROFILE: Symbol(),
-    //NO_AVAILABLE_ACCOUNTS: Symbol(),
-    
-}*/
+    BANNED_LAMBDA:(message,attachedError)=>new BannedLambda_Error(message,attachedError)
+}
+
+class BannedLambda_Error extends InternalError{
+    constructor(message,attachedError){
+        super(message,attachedError);
+        this.name="BannedLambda_Error"
+        this.message="Lambda banned from ig, deploy again"
+        this.critic=true;
+    }
+}
 
 
 
@@ -24,7 +32,12 @@ const SERVICE_ERRORS={
 //tanto de retornar un error para el usuario, como de ejecutar
 //la logica posterior necesaria de c/u.
 async function error_handler(error,AccountsManager,account_key){
-     
+    
+    if (error instanceof BannedLambda_Error){
+        internalError_handler(error);
+        return DEF_API_ERRORS.SERVER();
+    }
+    
     if (error instanceof IG_REQ_ERRORS.BannedIgAccount_Error){
         AccountsManager.disable_account(account_key);
         
@@ -68,4 +81,4 @@ async function error_handler(error,AccountsManager,account_key){
 }
 
 
-module.exports={error_handler}
+module.exports={error_handler,SERVICE_ERRORS}

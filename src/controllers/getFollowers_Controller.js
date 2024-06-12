@@ -10,6 +10,9 @@ const {check_userExistence,get_userInfo,
 //-------------------- importar parte de errors --------------------
 const {apiError_handler,FOLLOWERS_ERRORS}=require("../error_handling");
 
+//-------------------- importar env vars ---------------------
+const {APP_GEN_VARS}=require("../config/app_config.js");
+
 
 
 //GET "followers/user_info/:username"  params:{username}
@@ -24,11 +27,13 @@ async function user_info(req,res){
 
    let error;
    
-   //Chequear primero si existe
-   ({error}=await check_userExistence(username));
-   
-   //Si no tirar error.
-   if (error){apiError_handler(error,res);return;}
+   if (!APP_GEN_VARS.secure_mode){
+      //Chequear primero si existe
+      ({error}=await check_userExistence(username));
+
+      //Si no tirar error.
+      if (error){apiError_handler(error,res);return;}
+   }
    
    //Luego traer info
    ({error,user_info}=await get_userInfo(username));
