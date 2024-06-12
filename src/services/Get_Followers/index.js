@@ -1,3 +1,9 @@
+
+//--------------------  Import AWS related -------------------------------------
+const AWS=require("aws-sdk");
+const {AWS_VARS}=require("../../config/aws_config.js");
+
+//-------------------------------------------------------------
 const {get_IgAccountsManager}=require("../IgAccounts_Managment")
 
 //----------------- Import igRequests -----------------------
@@ -10,13 +16,49 @@ const {sleep}=require("./utils.js");
 const service_constVars=require("./const_vars.js");
 
 //-------------- Import errors part -------------------------
-const {error_handler}=require("./service_errorHandler.js");
+const {error_handler,SERVICE_ERRORS}=require("./service_errorHandler.js");
 
 const {DEF_API_ERRORS,FOLLOWERS_ERRORS}=require("../../error_handling");
 
 
 /*let AccountsManager=get_IgAccountsManager();
 console.log(AccountsManager);*/
+
+
+//----------------- CHEQUEAR SI EXSITE EL USER -------------------------------
+
+//##### Config de objs de AWS ######
+AWS.config.update({accessKeyId:AWS_VARS.accessKeyId, secretAccessKey: AWS_VARS.secretAccessKey});
+
+const lambda = new AWS.Lambda({
+    region:AWS_VARS.lambda_region, // Ajusta la región según sea necesario
+});
+
+//#### Function #########
+async function check_userExistence(username){
+    let params = {
+        FunctionName: AWS_VARS.lambda_name, // Cambia esto por el nombre de tu función Lambda
+        Payload: JSON.stringify({ username: username}),
+    };
+    
+    let accountExist;
+    try {
+        let resp= await lambda.invoke(params).promise();
+        let data= JSON.parse(resp.Payload);
+        accountExist=JSON.parse(data.body).result;
+        
+    } 
+    catch(e){
+        let user_error=await error_handler(SERVICE_ERRORS.BANNED_LAMBDA("",e));
+        return {error:user_error};
+    }
+
+    if (!accountExist){
+        return {error:FOLLOWERS_ERRORS.ACCOUNT_NOTEXIST()};
+    }
+    
+    else{return {}};
+}
 
 
 
@@ -128,4 +170,4 @@ async function get_followers(user_id,last_cursor){
 }
 
 
-module.exports={get_userInfo,get_followers};
+module.exports={check_userExistence,get_userInfo,get_followers};

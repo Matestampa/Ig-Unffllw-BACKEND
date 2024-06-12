@@ -1,5 +1,14 @@
 const {Api_ServerError,Api_BadRequest_Error}=require("./general_errors.js");
 
+class Api_ACCOUNT_NOTEXIST_Error extends Api_BadRequest_Error{
+    constructor(message,data){
+        super(message,data);
+        
+        this.sub_code="ACCOUNT_NOTEXIST";
+        this.message="The account does not exist";
+
+    }
+}
 
 class Api_PRIVATE_ACCOUNT_Error extends Api_BadRequest_Error{
     constructor(message,data){
@@ -39,6 +48,7 @@ class Api_REQUESTS_DISABLED_Error extends Api_ServerError{
 }
 
 const FOLLOWERS_ERRORS={
+    ACCOUNT_NOTEXIST: (message,data)=>new Api_ACCOUNT_NOTEXIST_Error(message,data),
     PRIVATE_ACCOUNT: (message,data)=>new Api_PRIVATE_ACCOUNT_Error(message,data),
     FOLL_EXCESS: (message,data)=>new Api_FOLL_EXCESS_Error(message,data),
     NOMORE_REQ: (message,data)=>new Api_NOMORE_REQ_Error(message,data),

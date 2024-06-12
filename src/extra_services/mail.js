@@ -29,7 +29,7 @@ async function sendMail(subject,text){
         text:text
     };
 
-    await transporter.sendMail(messageData);
+    //await transporter.sendMail(messageData);
 }
 
 module.exports={sendMail};
