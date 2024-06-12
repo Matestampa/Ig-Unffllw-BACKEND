@@ -26,7 +26,8 @@ async function user_info(req,res){
    
    //Chequear primero si existe
    ({error}=await check_userExistence(username));
-
+   
+   //Si no tirar error.
    if (error){apiError_handler(error,res);return;}
    
    //Luego traer info

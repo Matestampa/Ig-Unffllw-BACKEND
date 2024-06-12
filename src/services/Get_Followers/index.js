@@ -1,3 +1,9 @@
+
+//--------------------  Import AWS related -------------------------------------
+const AWS=require("aws-sdk");
+const {AWS_VARS}=require("../../config/aws_config.js");
+
+//-------------------------------------------------------------
 const {get_IgAccountsManager}=require("../IgAccounts_Managment")
 
 //----------------- Import igRequests -----------------------
@@ -21,8 +27,38 @@ console.log(AccountsManager);*/
 
 //----------------- CHEQUEAR SI EXSITE EL USER -------------------------------
 
+//##### Config de objs de AWS ######
+AWS.config.update({accessKeyId:AWS_VARS.accessKeyId, secretAccessKey: AWS_VARS.secretAccessKey});
+
+const lambda = new AWS.Lambda({
+    region:AWS_VARS.lambda_region, // Ajusta la región según sea necesario
+});
+
+//#### Function #########
 async function check_userExistence(username){
-    //llamar a la lambda
+    let params = {
+        FunctionName: AWS_VARS.lambda_name, // Cambia esto por el nombre de tu función Lambda
+        Payload: JSON.stringify({ username: username}),
+    };
+    
+    let accountExist;
+    try {
+        let resp= await lambda.invoke(params).promise();
+        let data= JSON.parse(resp.Payload);
+        accountExist=JSON.parse(data.body).result;
+        console.log(accountExist);
+        
+    } 
+    catch(e){
+        let user_error=error_handler(e);
+        return {error:user_error};
+    }
+
+    if (!accountExist){
+        return {error:FOLLOWERS_ERRORS.ACCOUNT_NOTEXIST()};
+    }
+    
+    else{return {}};
 }
 
 
