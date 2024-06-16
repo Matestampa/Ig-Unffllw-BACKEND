@@ -40,6 +40,13 @@ App.use(cors(
 App.use(express.json());
 App.use(cookieParser());
 
+
+//Endpoint para testear que el server funcione.
+App.get("hello",async (req,res)=>{
+    res.send("Server up");
+})
+
+
 App.use("/admin",admin_Routes);
 
 
