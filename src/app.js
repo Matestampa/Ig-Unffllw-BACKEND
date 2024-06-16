@@ -42,7 +42,7 @@ App.use(cookieParser());
 
 
 //Endpoint para testear que el server funcione.
-App.get("hello",async (req,res)=>{
+App.get("/hello",async (req,res)=>{
     res.send("Server up");
 })
 
