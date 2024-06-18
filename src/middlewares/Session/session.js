@@ -28,6 +28,7 @@ const SessionMiddleware=session({
 async function authentication(req,res,next){
     
     let comboId=get_combo_IpUserAgent(req,res); //hacemos combo
+    console.log(comboId);
    
     let prevSession=await StorageAccess.get(comboId)
     
@@ -58,7 +59,7 @@ async function authentication(req,res,next){
 
 //Hacer combo para el id de la session
 function get_combo_IpUserAgent(req,res){
-   let ip=req.ip;
+   let ip=get_ip(req);
    let userAgent=req.get("User-Agent");
 
    if (!ip || !userAgent){
@@ -66,6 +67,13 @@ function get_combo_IpUserAgent(req,res){
    }
 
    return ip+userAgent;
+}
+
+function get_ip(req){
+   let forwarded_header=req.headers["forwarded"];
+   let origin_ip=forwarded_header.match(/for=([^;]*)/)[1];;
+
+   return origin_ip;
 }
 
 
