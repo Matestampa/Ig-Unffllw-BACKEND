@@ -27,6 +27,9 @@ const SessionMiddleware=session({
 
 async function authentication(req,res,next){
     
+   console.log(req.ip);
+   console.log(req.headers['x-forwarded-for']);
+    
     let comboId=get_combo_IpUserAgent(req,res); //hacemos combo
    
     let prevSession=await StorageAccess.get(comboId)
