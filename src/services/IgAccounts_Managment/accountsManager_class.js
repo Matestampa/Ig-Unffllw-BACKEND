@@ -72,6 +72,10 @@ class IgAccounts_Manager{
     get_activeAccountsKeys(){
         return this.ACTIVE_ACCOUNTS_KEYS;
     }
+
+    get_allAccountsData(){
+        return IG_ACCOUNTS_DATA;
+    }
     
     
     //Da data de la cuenta para lo q sea (la usaria el de login x ejemplo)
@@ -84,20 +88,43 @@ class IgAccounts_Manager{
     //Setea data de la cuenta (la usaria el de login x ejemplo)
     set_accountData(account_key,field,data){
         
-        if (IG_ACCOUNTS_DATA[account_key][field]!=undefined){
-            
-            //Guardar en memoria
-            IG_ACCOUNTS_DATA[account_key][field]=data;
-
-            //guardar despues en alamcenamiento ext
-            this.Storage_Access.write(IG_ACCOUNTS_DATA);
-        
+        //Si se actualiza toda la data de una
+        if (field=="ALL"){
+            IG_ACCOUNTS_DATA[account_key]=data
         }
+        
+        //Si se actualiza por campo
+        else{
+            if (IG_ACCOUNTS_DATA[account_key][field]!=undefined){
+            
+                //Guardar en memoria
+                IG_ACCOUNTS_DATA[account_key][field]=data;
+            
+            }
+        }
+        
+        //guardar despues en alamcenamiento ext
+        this.Storage_Access.write(IG_ACCOUNTS_DATA);
+    
     }
     
     //Activa una cuenta
-    enable_account(account_key){
+    enable_account(account_key,data_already_setted){
         
+        //Si ya se llamo a set_accountData antes. Y solo se quiere actualizar la
+        //data del manager.
+        if (data_already_setted){
+            if (IG_ACCOUNTS_DATA[account_key]["active"]==true){
+                //Habilitar en "IgAccountsUse_Manager"
+                this.AccountsUse_Manager.enable_account(account_key);
+            
+                //Añadir key a las activas
+                this.ACTIVE_ACCOUNTS_KEYS.push(account_key);
+            }
+            return;
+        }
+        
+        //Si se quiere hacer todo.
         if (IG_ACCOUNTS_DATA[account_key]["active"]!=true){
         
             //Guardar en memoria, y ext

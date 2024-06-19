@@ -1,6 +1,8 @@
 const express=require("express");
 const App=express();
 
+const cors=require("cors");
+
 //---------------------- importacion de middlewares ---------------------
 const {entry_point}=require("./middlewares/entry_point.js");
 
@@ -9,6 +11,7 @@ const cookieParser=require("cookie-parser");
 const {SessionMiddleware,authentication}=require("./middlewares/Session/session.js");
 
 //----------------------- importacion de rutas ------------------------
+const admin_Routes=require("./routes/admin_Routes.js");
 const getFollowers_Routes=require("./routes/getFollowers_Routes.js");
 
 
@@ -25,15 +28,33 @@ const {initialize_IgAccountsLoginControl}=require("./services/IgAccounts_login")
 
 //-------------------- config general express ---------------------
 
+App.use(cors(
+    {
+        credentials:true,
+        origin:(origin,callback)=>{
+            callback(null,true);
+        }
+    }
+));
+
 App.use(express.json());
 App.use(cookieParser());
 
 
+//Endpoint para testear que el server funcione.
+App.get("/hello",async (req,res)=>{
+    res.send("Server up");
+})
+
+
+App.use("/admin",admin_Routes);
+
+
+App.use(entry_point);
 App.use(SessionMiddleware);
 
 
 //------------------- middlewares de entrada --------------------
-//App.use(entry_point);
 App.use(authentication);
 
 

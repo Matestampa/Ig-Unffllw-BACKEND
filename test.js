@@ -53,48 +53,54 @@ async function level0(){
 
 level0();*/
 
-const RedisStore=require("connect-redis").default;
-const {createClient}=require("redis");
+/*const nodemailer=require("nodemailer");
 
-let redisClient=createClient({
-    host:"localhost",
-    port:6379,
+const transporter=nodemailer.createTransport({
+    service:"gmail",
+    host:"smtp.gmail.com",
+    auth:{
+        user:"smikeljordan@gmail.com",
+        pass:"vpcu sbkf scrf yqoa"
+    }
 })
 
-redisClient.connect().catch(console.log)
+let messageData={
+   from:{
+    name:"IgUnfollowApp",
+    address: "smikeljordan@gmail.com"
+   },
+   to:"paredpiso5@gmail.com",
 
-let redisStore=new RedisStore({
-   client:redisClient,
-   prefix:"igUnfollowSession:",
-   ttl:1000*60*60*24,
-   disableTouch:true,
-})
+   subject:"Prueba del mail en node",
+   text:"hola desde nodeeeee",
+}
 
 async function dale(){
-    //await redisStore.set("age","tute");
-    let value=await sessionStorage.get("age",(err,data)=>{return data});
-    console.log(value)
-    //await redisStore.set("name","yapu");
-    //let all=await sessionStorage.all((err,data)=>{return err});
-
-    //console.log(all);
-
+    await transporter.sendMail(messageData);
+    console.log("Mail enviado");
 }
 
-class SessionStorage{
-    constructor(StorageClass){
-        this.Storage=StorageClass;
-    }
+dale();*/
 
-    async get(key){
-        return await this.Storage.get(key,(err,data)=>{return data})
-    }
-
-    async set(key,value){
-        await this.Storage.set(key,value);
+class NormalError extends Error{
+    constructor(message){
+        super(message)
+        this.name="NormalError"
+        this.message=message;
     }
 }
 
-let sessionStorage=new SessionStorage(redisStore);
+function dale(){
+    try{
+        throw new NormalError("putto");
+    }
+
+    catch(e){
+        console.log(e.name);
+    }
+}
+
 
 dale();
+
+

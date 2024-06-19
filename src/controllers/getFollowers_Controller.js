@@ -4,23 +4,39 @@ const uuid=require("uuid");
 const {normal_response}=require("../middlewares/response.js");
 
 //------------------- importar servicios --------------------------
-const {get_userInfo,get_followers}=require("../services/Get_Followers");
+const {check_userExistence,get_userInfo,
+       get_followers}=require("../services/Get_Followers");
 
 //-------------------- importar parte de errors --------------------
-const {apiError_handler,DEF_API_ERRORS}=require("../error_handling");
+const {apiError_handler,FOLLOWERS_ERRORS}=require("../error_handling");
+
+//-------------------- importar env vars ---------------------
+const {APP_GEN_VARS}=require("../config/app_config.js");
+
 
 
 //GET "followers/user_info/:username"  params:{username}
 async function user_info(req,res){
    
    if (req.session["avail_mainReq"]<=0){
-      apiError_handler(DEF_API_ERRORS.BAD_REQ("No available requests"),res);return;
+      apiError_handler(FOLLOWERS_ERRORS.NOMORE_REQ(),res);return;
 
    }
 
    let username=req.params.username;
+
+   let error;
    
-   let {error,user_info}=await get_userInfo(username);
+   if (!APP_GEN_VARS.secure_mode){
+      //Chequear primero si existe
+      ({error}=await check_userExistence(username));
+
+      //Si no tirar error.
+      if (error){apiError_handler(error,res);return;}
+   }
+   
+   //Luego traer info
+   ({error,user_info}=await get_userInfo(username));
 
    if (error){
       apiError_handler(error,res);return;
@@ -36,7 +52,10 @@ async function user_info(req,res){
    //Setear el token en la cookie y la session, para hacer las req a followers
    let authToken=uuid.v4();
 
-   res.cookie("auth_follReq",authToken)
+   res.cookie("auth_follReq",authToken,{
+      secure:true,
+      sameSite:"none"
+   });
    req.session["auth_follReq"]=authToken;
    
    //Setear en la session el user_id, del que deben traerse los followers
@@ -51,15 +70,17 @@ async function user_info(req,res){
 
 }
 
-//GET "followers/nexts/"   body:{user_id, last_cursor}
+//POST "followers/nexts/"   body:{user_id, last_cursor}
 async function next_followers(req,res){
-    let {user_id,last_cursor}=req.body; 
+    let {user_id,last_cursor}=req.body;
+    
+    console.log(last_cursor);
 
     //Control de session, para verificar token, y para no pasar limites
     if (req.session["auth_follReq"]!=req.cookies["auth_follReq"]  
        || req.session["remain_foll"]<=0 || req.session["usId_follReq"] != user_id){
       
-      apiError_handler(DEF_API_ERRORS.BAD_REQ("No available requests"),res); return;
+      apiError_handler(FOLLOWERS_ERRORS.NOMORE_REQ(),res); return;
     }
     
     

@@ -1,36 +1,23 @@
-
-
-function apiError_handler(error,response){
-    
-    let response_message=error.message? error.message: error.default_message;
-
-    response.status(error.status_code).json({
-        status:error.status_code,
-        error:{
-            message:response_message,
-            data:error.data 
-        }
-    });
-}
-
-
 //Clase Base de errors para la api.
 class Error4User extends Error{
     constructor(message,data){
       super(message);
       this.message=message; 
       this.data=data;
+      this.code;
       this.default_message;
       this.status_code;
     }
 }
 
 
-//Clases hijass
+//------------ Clases hijas -------------------------
+
 class Api_NotAuth_Error extends Error4User{
     constructor(message,data){
         super(message,data);
-
+        
+        this.code="NOT_AUTH";
         this.default_message="Unhautorized user"
         this.status_code=401;
     }
@@ -39,7 +26,8 @@ class Api_NotAuth_Error extends Error4User{
 class Api_BadRequest_Error extends Error4User{
     constructor(message,data){
         super(message,data);
-
+        
+        this.code="BAD_REQ";
         this.default_message="Bad request"
         this.status_code=404;
     }
@@ -49,6 +37,7 @@ class Api_Retry_Error extends Error4User{
     constructor(message,data){
         super(message,data)
         
+        this.code="RETRY";
         this.status_code=404;
         this.default_message="Retry the request";
     }
@@ -57,7 +46,8 @@ class Api_Retry_Error extends Error4User{
 class Api_ServerError extends Error4User{
     constructor(message,data){
         super(message,data);
-
+        
+        this.code="SERVER";
         this.default_message="Server malfunc"
         this.status_code=500;
     }
@@ -73,4 +63,5 @@ const DEF_API_ERRORS={
 }
 
 
-module.exports={apiError_handler,Error4User,DEF_API_ERRORS};
+module.exports={Error4User,Api_NotAuth_Error,Api_BadRequest_Error,
+                Api_Retry_Error,Api_ServerError,DEF_API_ERRORS};

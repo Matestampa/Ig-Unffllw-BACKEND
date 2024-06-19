@@ -1,18 +1,17 @@
 
 const {APP_ACCESS_VARS,APP_GEN_VARS}=require("../config/app_config");
-const {apiError_handler,DEF_API_ERRORS}=require("../error_handling");
+const {apiError_handler,DEF_API_ERRORS,FOLLOWERS_ERRORS}=require("../error_handling");
 
 
 async function entry_point(req,res,next){
-     
      //Si las requests no estan habilitadas
      if (!APP_ACCESS_VARS.allow_requests){
-        apiError_handler(DEF_API_ERRORS.SERVER(),res);
+        apiError_handler(FOLLOWERS_ERRORS.REQUESTS_DISABLED(),res);
         return 
      }
      
      //Si estamos en dev_mode(o testing)
-     if (APP_GEN_VARS.dev_mode){
+     if (APP_GEN_VARS.alpha_mode==true){
         
         //Verificar que la request contenga la password exclusiva
         let pwd=req.body["excl_pwd"];
