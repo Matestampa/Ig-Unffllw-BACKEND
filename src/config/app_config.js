@@ -7,6 +7,7 @@ dotenv.config({path:env_absPath});
 
 //Variables generales
 const APP_GEN_VARS={
+    main_mode:process.env.APP_ENV,
     alpha_mode:process.env.ALPHA_MODE,
     secure_mode:process.env.SECURE_MODE
 }
