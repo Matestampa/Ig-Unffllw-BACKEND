@@ -4,7 +4,7 @@ const {apiError_handler,DEF_API_ERRORS}=require("../../error_handling");
 
 const {redisStore,SessionStorageAccess}=require("./storage.js");
 
-const {copy_prevSessionAttrs,get_combo_IpUserAgent}=require("./utils.js")
+const {copy_prevSessionAttrs,get_combo_IpUserAgent, set_initialSessionAttrs}=require("./utils.js")
 
 
 const StorageAccess=new SessionStorageAccess(redisStore);
@@ -45,14 +45,11 @@ async function authentication(req,res,next){
     
     else{ //Si no existe seteamos los datos default
        console.log("No existe")
-       req.session["avail_mainReq"]=2;
-       req.session["remain_foll"]=null;
-       req.session["auth_follReq"]=null;
-       req.session["createdDate"]=new Date();
+       set_initialSessionAttrs(req.session);
 
     }
-    res.status(200).send("Tu viejaaa");
-    //next();
+    //res.status(200).send("Tu viejaaa");
+    next();
 
 }
 

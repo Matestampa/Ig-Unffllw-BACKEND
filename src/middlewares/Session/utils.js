@@ -10,6 +10,13 @@ function copy_prevSessionAttrs(emptySession, prevSession){
     emptySession["createdDate"]=prevSession["createdDate"];
 }
 
+function set_initialSessionAttrs(session){
+    session["avail_mainReq"]=2;
+    session["remain_foll"]=null;
+    session["auth_follReq"]=null;
+    session["createdDate"]=new Date();
+}
+
 //Hacer combo para el id de la session
 function get_combo_IpUserAgent(req,res){
     let ip=get_ip(req);
@@ -39,5 +46,6 @@ function get_ip(req){
 
 module.exports={
     copy_prevSessionAttrs,
+    set_initialSessionAttrs,
     get_combo_IpUserAgent
 }
