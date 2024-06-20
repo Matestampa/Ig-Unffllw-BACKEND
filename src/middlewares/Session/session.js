@@ -4,7 +4,7 @@ const {apiError_handler,DEF_API_ERRORS}=require("../../error_handling");
 
 const {redisStore,SessionStorageAccess}=require("./storage.js");
 
-const {copy_prevSessionAttrs}=require("./utils.js")
+const {copy_prevSessionAttrs,get_combo_IpUserAgent, set_initialSessionAttrs}=require("./utils.js")
 
 
 const StorageAccess=new SessionStorageAccess(redisStore);
@@ -45,35 +45,12 @@ async function authentication(req,res,next){
     
     else{ //Si no existe seteamos los datos default
        console.log("No existe")
-       req.session["avail_mainReq"]=2;
-       req.session["remain_foll"]=null;
-       req.session["auth_follReq"]=null;
-       req.session["createdDate"]=new Date();
+       set_initialSessionAttrs(req.session);
 
     }
     //res.status(200).send("Tu viejaaa");
     next();
 
-}
-
-
-//Hacer combo para el id de la session
-function get_combo_IpUserAgent(req,res){
-   let ip=get_ip(req);
-   let userAgent=req.get("User-Agent");
-
-   if (!ip || !userAgent){
-      apiError_handler(DEF_API_ERRORS.BAD_REQ(),res);return;
-   }
-
-   return ip+userAgent;
-}
-
-function get_ip(req){
-   let forwarded_header=req.headers["forwarded"];
-   let origin_ip=forwarded_header.match(/for=([^;]*)/)[1];;
-
-   return origin_ip;
 }
 
 
