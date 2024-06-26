@@ -71,7 +71,7 @@ async function get_userInfo(username){
     let AccountsManager=get_IgAccountsManager();
     
     //Cuenta para hacer la request.
-    let req_account=AccountsManager.get_accountForReq();
+    let req_account=await AccountsManager.get_accountForReq();
     
     //Si ya no hay cuentas disponibles
     if (!req_account){
@@ -128,7 +128,7 @@ async function get_followers(user_id,last_cursor){
         await sleep( service_constVars.MS_BTW_REQ );
         
         //Cuenta para hacer la request.
-        req_account=AccountsManager.get_accountForReq();
+        req_account=await AccountsManager.get_accountForReq();
         
         //Si ya no hay cuentas disponibles
         if (!req_account){

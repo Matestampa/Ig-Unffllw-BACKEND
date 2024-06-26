@@ -39,12 +39,12 @@ class IgAccounts_Manager{
     }
     
     //Da la data de una cuenta para hacer req
-    get_accountForReq(){
+    async get_accountForReq(){
        let account_key;
        let repeat=false;
        
        do{
-         account_key=this.AccountsUse_Manager.get_availAccount();
+         account_key=await this.AccountsUse_Manager.get_availAccount();
          
          //Si pasa esto es q no hay mas accounts disponibles
          if (account_key==undefined){
